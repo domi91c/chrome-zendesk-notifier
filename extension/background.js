@@ -10,7 +10,7 @@ var ticketIDArrayNew = [];
 var ticketSubjects = [];
 
 
-var doRequest = function() {
+var doRequest = function(callback) {
 
     console.log('Performing request');
     var xml = new XMLHttpRequest();
@@ -22,6 +22,9 @@ var doRequest = function() {
             if (xml.status === 200) {
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
+                if (ticketIDArrayNew.length == 0 && callback) {
+                    callback();
+                };
                 notify_new_tickets();
             } else {
                 chrome_notify_error("Request failed with error: " + xml.status);
@@ -29,6 +32,13 @@ var doRequest = function() {
         }
     };
 };
+
+var doRequestInvoked = function() {
+
+    doRequest(function() {
+        chrome_notify('No new tickets!', null);
+    });
+}
 
 var process_tickets = function(response) {
 
@@ -76,6 +86,24 @@ function notify_new_tickets() {
     };
 }
 
+function chrome_notify(title, msg) {
+
+    if (msg == null) {
+        msg = "";
+    }
+
+    var notificationID = "";
+    var opt = {
+        type: "basic",
+        title: title,
+        message: msg,
+        iconUrl: "icons/ticket-38.png",
+    };
+
+    chrome.notifications.create(notificationID, opt, function (notificationID) {
+        console.info('notification ' + notificationID + ' created');
+    });
+}
 
 function chrome_notify_error(errorMsg) {
 
@@ -91,7 +119,6 @@ function chrome_notify_error(errorMsg) {
         console.info('notification ' + notificationID + ' created');
     });
 }
-
 
 function chrome_notify_tickets(ticketID) {
 
