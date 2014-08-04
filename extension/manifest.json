@@ -13,7 +13,8 @@
             "19": "icons/ticket-19.png",
             "38": "icons/ticket-38.png"
         },
-        "default_title": "Ticket Checker"
+        "default_title": "Ticket Checker",
+        "default_popup": "popup/popup.html"
     },
     "icons": {
         "128": "icons/ticket-128.png"

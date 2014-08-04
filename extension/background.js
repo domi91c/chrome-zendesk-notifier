@@ -22,7 +22,7 @@ var doRequest = function() {
     };
 };
 
-doRequest();
+// doRequest();
 
 
 
