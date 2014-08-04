@@ -30,3 +30,9 @@
 
 # Feature to implement
 * if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.
+
+# Resources
+* sad face icon:
+	* author: CrimsonAngelofShadow
+	* http://crimsonangelofshadow.deviantart.com/art/Innocent-Sad-Face-Icon-272714484
+	

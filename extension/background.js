@@ -3,13 +3,16 @@ var zendeskDomain = 'wdc5'
 var viewID = '32751499'
 // var url = 'https://' + zendeskDomain + '.zendesk.com/api/v2/views.json'
 var url = 'https://' + zendeskDomain + '.zendesk.com/api/v2/views/' + viewID + '/tickets.json'
+
 var ticketIDArrayPrev = [];
 var ticketIDArrayCurrent = [];
 var ticketIDArrayNew = [];
+var ticketSubjects = [];
 
 
 var doRequest = function() {
 
+    console.log('Performing request');
     var xml = new XMLHttpRequest();
     xml.open('GET', url);
     xml.send();
@@ -21,7 +24,7 @@ var doRequest = function() {
                 compare_tickets();
                 notify_new_tickets();
             } else {
-                console.error("Request failed with error: " + xml.status);
+                chrome_notify_error("Request failed with error: " + xml.status);
             }
         }
     };
@@ -30,12 +33,16 @@ var doRequest = function() {
 var process_tickets = function(response) {
 
     ticketIDArrayCurrent = [];
+    ticketSubjects = [];
 
     tickets = response.tickets;
     for (var i = 0; i < tickets.length; i++) {
         ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
+        ticketSubjects[tickets[i].id] = tickets[i].subject;
     }
-    console.log('current tickets: ' + ticketIDArrayCurrent);
+    // console.log('previous tickets: ' + ticketIDArrayPrev);
+    // console.log('current tickets: ' + ticketIDArrayCurrent);
+    // console.log('current ticket subjects: ' + ticketSubjects);
 
 };
 
@@ -51,33 +58,68 @@ function compare_tickets() {
             ticketIDArrayNew.push(thisTicket);  // ...it's new
         }
     };
-    console.log('new tickets: ' + ticketIDArrayNew);
+    // console.log('new tickets: ' + ticketIDArrayNew);
 
     // replace previous with current
     ticketIDArrayPrev = ticketIDArrayCurrent.slice(0);
-    console.log('updated previous tickets: ' + ticketIDArrayPrev);
-
 }
 
 function notify_new_tickets() {
 
+    if (ticketIDArrayNew.length > 3) {
+        chrome_notify_multi(ticketIDArrayNew.length);
+        return;
+    }
+
     for (var i = 0; i < ticketIDArrayNew.length; i++) {
-        chrome_notify(ticketIDArrayNew[i]);    
+        chrome_notify_tickets(ticketIDArrayNew[i]);    
     };
 }
 
-function chrome_notify(ticketID) {
+
+function chrome_notify_error(errorMsg) {
+
+    var notificationID = "";
+    var opt = {
+        type: "basic",
+        title: "Error retrieving tickets",
+        message: errorMsg,
+        iconUrl: "icons/sad-face.png",
+    };
+
+    chrome.notifications.create(notificationID, opt, function (notificationID) {
+        console.info('notification ' + notificationID + ' created');
+    });
+}
+
+
+function chrome_notify_tickets(ticketID) {
 
     var notificationID = "notif-" + ticketID;
     var opt = {
         type: "basic",
         title: "New Ticket Submitted: #" + ticketID,
-        message: "Primary message to display",
+        message: '"' + ticketSubjects[ticketID] + '"',
         iconUrl: "icons/ticket-38.png",
     };
 
     chrome.notifications.create(notificationID, opt, function (notificationID) {
-        console.info('notification ' + notificationID + ' launched!');
+        console.info('notification ' + notificationID + ' created');
+    });
+}
+
+function chrome_notify_multi(numTickets) {
+
+    var notificationID = "multi-tickets"
+    var opt = {
+        type: "basic",
+        title: numTickets + " new tickets",
+        message: "Click me to go see them!",
+        iconUrl: "icons/ticket-38.png",
+    };
+
+    chrome.notifications.create(notificationID, opt, function (notificationID) {
+        console.info('notification ' + notificationID + ' created');
     });
 }
 
@@ -86,12 +128,24 @@ chrome.notifications.onClicked.addListener(ticket_notif_click);
 
 function ticket_notif_click(notificationID) {
 
-    var ticketID = notificationID.split('-')[1];
-    var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
-    chrome.tabs.create({ url: newURL });
+    if (notificationID.indexOf('notif') !== -1) {
+        
+        var ticketID = notificationID.split('-')[1];
+        var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
+        chrome.tabs.create({ url: newURL });
+        return;
+
+    } else if (notificationID.indexOf('multi-tickets') !== -1) {
+
+        var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/filters/' + viewID;
+        chrome.tabs.create({ url: newURL });
+
+    } else {
+
+        return;
+    };
 
 }
 
+setInterval(doRequest, 60000); // every 60 seconds
 
-
-// doRequest();
