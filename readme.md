@@ -1,7 +1,3 @@
-# Zendesk Chrome Extension (test)
+# Zendesk Chrome Extension
 
-## Features to add
-
-- rich notifications
-- ability to select notifications from specific zendesk views
-- use active user's cookies to sign in instead of requiring username/password entry
+Checks for new tickets in a given view and alerts the user via Chrome rich notifications.
