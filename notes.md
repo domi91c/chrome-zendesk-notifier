@@ -33,6 +33,7 @@
 * allow user to turn on/off
 * allow user to specify domain and refresh interval
 * option to open in new tab or current zendesk window/tab
+* "check now" button should have option to show any tickets in view, or just new tickets from last check
 
 # Resources
 * sad face icon:
