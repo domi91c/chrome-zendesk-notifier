@@ -34,6 +34,7 @@
 * allow user to specify domain and refresh interval
 * option to open in new tab or current zendesk window/tab
 * "check now" button should have option to show any tickets in view, or just new tickets from last check
+* dequeue requests so that error message don't pile up when unable to connect (or computer goes to sleep)
 
 # Resources
 * sad face icon:
