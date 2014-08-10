@@ -1,3 +1,34 @@
+var previousStorageValue;
+
+chrome.storage.local.get("key1", function(items) {
+    if (items.key1) {
+        console.log("retrieval successful: " + items.key1);
+        previousStorageValue = items.key1;    
+    }
+    prompt_user();
+})
+
+function prompt_user() {
+    testStorageValue = window.prompt('input a value to store', previousStorageValue);
+    store_value();
+}
+
+function store_value() {
+    chrome.storage.local.set({"key1": testStorageValue}, function() {
+        console.log("storage successful: " + testStorageValue);
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
 
 var zendeskDomain = 'wdc5'
 var viewID = '32751499'

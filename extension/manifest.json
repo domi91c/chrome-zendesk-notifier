@@ -1,12 +1,12 @@
 {
-    "name": "Zendesk New Ticket Checker",
-    "description": "Checks for new Zendesk tickets in a specific view",
+    "name": "Zendesk New Case Checker",
+    "description": "Checks for new Zendesk cases in a specific view",
     "version": "1.0.0",
     "background": {
         "scripts": ["background.js"]
     },
     "permissions": [
-        "https://*.zendesk.com/", "notifications"
+        "https://*.zendesk.com/", "notifications", "storage"
     ],
     "browser_action": {
         "default_icon": {
