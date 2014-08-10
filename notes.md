@@ -38,6 +38,20 @@
 * Triage mode
 	* checks for unassigned tickets in a specific view
 
+### V1.01
+* More functional "check now" button
+	* also resets. No need for extra "reset" button
+	* button shows feedback overlay
+		* green check if succeed
+		* red x if failed
+* on/off shows feedback
+	* disables internal text input when off
+* smart interval text-input
+	* only 2 digits, auto corrects invalid input to 1 min
+* show error messages off by default
+* extension icon shows feedback (gray, on/off state)
+* 
+
 # Resources
 * sad face icon:
 	* author: CrimsonAngelofShadow
