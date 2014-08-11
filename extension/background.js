@@ -68,9 +68,9 @@ function store_value() {
 }
 
 // set icon to gray
-chrome.browserAction.setIcon({
-    path: 'icons/ZD-logo-gray-19.png'
-});
+// chrome.browserAction.setIcon({
+//     path: 'icons/ZD-logo-gray-19.png'
+// });
 
 // badge app icon
 chrome.browserAction.setBadgeBackgroundColor({
