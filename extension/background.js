@@ -1,19 +1,57 @@
+var settings = {
+    enabled: null,
+    interval: null,
+    zendeskDomain: null,
+    viewID: null,
+    showErrors: null,
 
-settings = {
-    enabled: true,
-    zendeskDomain: '',
-    viewID: '',
-    showErrors: false
+    load: function() {
+        var that = this;
+        chrome.storage.local.get(null, function(loaded) {
+            that.enabled = loaded.enabled;
+            that.zendeskDomain = loaded.zendeskDomain;
+            that.viewID = loaded.viewID;
+            that.showErrors = loaded.showErrors;
+        })
+    },
+    save: function() {
+        chrome.storage.local.set({
+            'enabled': true,
+            'zendeskDomain': 'wdc5',
+            'viewID': 32751499,
+            'showErrors': false
+        })
+    },
+    clear: function() {
+        chrome.storage.local.clear(function() {
+            console.log('settings cleared');
+        })
+    }
 }
+
+
+// listen for popup open and close event
+chrome.runtime.onConnect.addListener(function(port) {
+    console.log('got a connection from port: ' + port);
+    port.onDisconnect.addListener(function() {
+        console.log('disconnected');
+
+        // TODO: code to update settings from view
+
+    })
+})
+
+
+
 
 var previousStorageValue;
 
-chrome.storage.local.get("key1", function(items) {
-    if (items.key1) {
+chrome.storage.local.get(null, function(items) {
+    if (items) {
         console.log("retrieval successful: " + items.key1);
-        previousStorageValue = items.key1;    
+        previousStorageValue = items.key1;
     }
-    prompt_user();
+    // prompt_user();
 })
 
 function prompt_user() {
@@ -22,19 +60,25 @@ function prompt_user() {
 }
 
 function store_value() {
-    chrome.storage.local.set({"key1": testStorageValue}, function() {
+    chrome.storage.local.set({
+        "key1": testStorageValue
+    }, function() {
         console.log("storage successful: " + testStorageValue);
     })
 }
 
 // set icon to gray
-chrome.browserAction.setIcon({path: 'icons/ZD-logo-gray-19.png'});
+chrome.browserAction.setIcon({
+    path: 'icons/ZD-logo-gray-19.png'
+});
 
 // badge app icon
-chrome.browserAction.setBadgeBackgroundColor({color:[0, 185, 242, 255]});
-chrome.browserAction.setBadgeText({text:"5"});
-
-
+chrome.browserAction.setBadgeBackgroundColor({
+    color: [0, 185, 242, 255]
+});
+chrome.browserAction.setBadgeText({
+    text: "5"
+});
 
 
 
@@ -46,7 +90,7 @@ chrome.browserAction.setBadgeText({text:"5"});
 
 var zendeskDomain = 'wdc5'
 var viewID = '32751499'
-// var url = 'https://' + zendeskDomain + '.zendesk.com/api/v2/views.json'
+    // var url = 'https://' + zendeskDomain + '.zendesk.com/api/v2/views.json'
 var url = 'https://' + zendeskDomain + '.zendesk.com/api/v2/views/' + viewID + '/tickets.json'
 
 var ticketIDArrayPrev = [];
@@ -102,7 +146,7 @@ var process_tickets = function(response) {
 };
 
 function compare_tickets() {
-    
+
     var thisTicket;
     ticketIDArrayNew = [];
 
@@ -110,7 +154,7 @@ function compare_tickets() {
     for (var i = 0; i < ticketIDArrayCurrent.length; i++) {
         thisTicket = ticketIDArrayCurrent[i];
         if (ticketIDArrayPrev.indexOf(thisTicket) == -1) { // if a current ticket is not found in previous array...
-            ticketIDArrayNew.push(thisTicket);  // ...it's new
+            ticketIDArrayNew.push(thisTicket); // ...it's new
         }
     };
     // console.log('new tickets: ' + ticketIDArrayNew);
@@ -127,7 +171,7 @@ function notify_new_tickets() {
     }
 
     for (var i = 0; i < ticketIDArrayNew.length; i++) {
-        chrome_notify_tickets(ticketIDArrayNew[i]);    
+        chrome_notify_tickets(ticketIDArrayNew[i]);
     };
 }
 
@@ -145,7 +189,7 @@ function chrome_notify(title, msg) {
         iconUrl: "icons/ticket-38.png",
     };
 
-    chrome.notifications.create(notificationID, opt, function (notificationID) {
+    chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
 }
@@ -160,7 +204,7 @@ function chrome_notify_error(errorMsg) {
         iconUrl: "icons/sad-face.png",
     };
 
-    chrome.notifications.create(notificationID, opt, function (notificationID) {
+    chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
 }
@@ -175,7 +219,7 @@ function chrome_notify_tickets(ticketID) {
         iconUrl: "icons/ticket-38.png",
     };
 
-    chrome.notifications.create(notificationID, opt, function (notificationID) {
+    chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
 }
@@ -190,7 +234,7 @@ function chrome_notify_multi(numTickets) {
         iconUrl: "icons/ticket-38.png",
     };
 
-    chrome.notifications.create(notificationID, opt, function (notificationID) {
+    chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
 }
@@ -201,16 +245,20 @@ chrome.notifications.onClicked.addListener(ticket_notif_click);
 function ticket_notif_click(notificationID) {
 
     if (notificationID.indexOf('notif') !== -1) {
-        
+
         var ticketID = notificationID.split('-')[1];
         var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
-        chrome.tabs.create({ url: newURL });
+        chrome.tabs.create({
+            url: newURL
+        });
         return;
 
     } else if (notificationID.indexOf('multi-tickets') !== -1) {
 
         var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/filters/' + viewID;
-        chrome.tabs.create({ url: newURL });
+        chrome.tabs.create({
+            url: newURL
+        });
 
     } else {
 
@@ -220,4 +268,3 @@ function ticket_notif_click(notificationID) {
 }
 
 setInterval(doRequest, 600000); // every 600 seconds
-
