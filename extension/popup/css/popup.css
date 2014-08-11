@@ -1,0 +1,63 @@
+body {
+    background: white;
+    font-family: "Source Sans", helvetica, arial, sans-serif;
+    font-weight: lighter;
+    font-size: 14px;
+}
+
+.wrapper {
+    margin: 20px;
+    width: 200px;
+}
+
+div.option-line {
+    margin: 10px 0;
+    height: 30px;
+    line-height: 30px;
+}
+
+.topcoat-button--large,
+.topcoat-button--large--quiet {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.688rem;
+  padding: 0 0.875rem;
+}
+
+.topcoat-text-input--large {
+  line-height: 1.688rem;
+  font-size: 0.875rem;
+}
+
+.interval-label {
+    position: relative;
+    left: 12px;
+}
+
+label.topcoat-switch {
+    top: 3px;
+    height: 21px;
+}
+
+#input-interval {
+    width: 40px;
+}
+
+.topcoat-switch {
+    float: right;
+    font-weight: normal;
+}
+
+#input-domain, #input-viewid {
+    float: right;
+    width: 144px;
+}
+
+.topcoat-checkbox {
+    float: right;
+    top: 7px;
+}
+
+#checknow {
+    width: 200px;
+}

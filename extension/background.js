@@ -1,3 +1,11 @@
+
+settings = {
+    enabled: true,
+    zendeskDomain: '',
+    viewID: '',
+    showErrors: false
+}
+
 var previousStorageValue;
 
 chrome.storage.local.get("key1", function(items) {
@@ -19,6 +27,12 @@ function store_value() {
     })
 }
 
+// set icon to gray
+chrome.browserAction.setIcon({path: 'icons/ZD-logo-gray-19.png'});
+
+// badge app icon
+chrome.browserAction.setBadgeBackgroundColor({color:[0, 185, 242, 255]});
+chrome.browserAction.setBadgeText({text:"5"});
 
 
 
@@ -205,5 +219,5 @@ function ticket_notif_click(notificationID) {
 
 }
 
-setInterval(doRequest, 60000); // every 60 seconds
+setInterval(doRequest, 600000); // every 600 seconds
 

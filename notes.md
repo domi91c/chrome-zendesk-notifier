@@ -29,7 +29,7 @@
 	* http://developer.zendesk.com/documentation/rest_api/ticket_export.html
 
 # Features to implement
-* if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.
+* *if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.*
 * allow user to turn on/off
 * allow user to specify domain and refresh interval
 * option to open in new tab or current zendesk window/tab
