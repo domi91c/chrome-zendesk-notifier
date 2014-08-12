@@ -13,7 +13,19 @@ var settings = {
             that.zendeskDomain = loaded.zendeskDomain;
             that.viewID = loaded.viewID;
             that.showErrors = loaded.showErrors;
+
+            if (that.interval < 1) {
+                that.interval = 1;
+            }
+            autoCheck();
         })
+
+    },
+    getInterval: function() {
+        if (this.interval < 1) {
+            this.interval = 1;
+        }
+        return this.interval;
     },
     save: function() {
         chrome.storage.local.set({
@@ -31,68 +43,11 @@ var settings = {
     }
 }
 
-function update_icon() {
-    if (settings.enabled == true) {
-        chrome.browserAction.setIcon({
-            path: 'icons/ZD-logo-19.png'
-        });
-    } else {
-        chrome.browserAction.setIcon({
-            path: 'icons/ZD-logo-gray-19.png'
-        });
-    }
-}
-
-function badge_icon(number) {
-    chrome.browserAction.setBadgeBackgroundColor({
-        color: [0, 185, 242, 255]
-    });
-    chrome.browserAction.setBadgeText({
-        text: number.toString()
-    });
-}
-
-
-settings.load();
-
-// save settings when popup closes
-chrome.runtime.onConnect.addListener(function(port) {
-    port.onDisconnect.addListener(function() {
-        settings.save();
-    })
-})
-
-
 var ticketIDArrayPrev = [];
 var ticketIDArrayCurrent = [];
 var ticketIDArrayNew = [];
 var ticketSubjects = [];
 
-
-var doRequest = function(callback) {
-
-    var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json'
-
-    console.log('Performing request');
-    var xml = new XMLHttpRequest();
-    xml.open('GET', url);
-    xml.send();
-
-    xml.onreadystatechange = function() {
-        if (xml.readyState === 4) {
-            if (xml.status === 200) {
-                process_tickets(JSON.parse(xml.responseText));
-                compare_tickets();
-                if (ticketIDArrayNew.length == 0 && callback) {
-                    callback();
-                };
-                notify_new_tickets();
-            } else {
-                chrome_notify_error(error_message(xml.status));
-            }
-        }
-    };
-};
 
 function error_message(status) {
 
@@ -118,6 +73,31 @@ function error_message(status) {
     return errorMsg.toString();
 }
 
+function doRequest(callback) {
+
+    var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json'
+
+    console.log('Performing request');
+    var xml = new XMLHttpRequest();
+    xml.open('GET', url);
+    xml.send();
+
+    xml.onreadystatechange = function() {
+        if (xml.readyState === 4) {
+            if (xml.status === 200) {
+                process_tickets(JSON.parse(xml.responseText));
+                compare_tickets();
+                if (ticketIDArrayNew.length == 0 && callback) {
+                    callback();
+                };
+                notify_new_tickets();
+            } else {
+                chrome_notify_error(error_message(xml.status));
+            }
+        }
+    };
+};
+
 function doRequestInvoked() {
 
     doRequest(function() {
@@ -125,7 +105,7 @@ function doRequestInvoked() {
     });
 }
 
-var process_tickets = function(response) {
+function process_tickets(response) {
 
     ticketIDArrayCurrent = [];
     ticketSubjects = [];
@@ -135,10 +115,6 @@ var process_tickets = function(response) {
         ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
         ticketSubjects[tickets[i].id] = tickets[i].subject;
     }
-    // console.log('previous tickets: ' + ticketIDArrayPrev);
-    // console.log('current tickets: ' + ticketIDArrayCurrent);
-    // console.log('current ticket subjects: ' + ticketSubjects);
-
 };
 
 function compare_tickets() {
@@ -210,8 +186,9 @@ function chrome_notify_tickets(ticketID) {
     var notificationID = "notif-" + ticketID;
     var opt = {
         type: "basic",
-        title: "New Case Submitted: #" + ticketID,
+        title: "New Case Submitted",
         message: '"' + ticketSubjects[ticketID] + '"',
+        contextMessage: "#" + ticketID,
         iconUrl: "icons/ticket-38.png",
     };
 
@@ -240,7 +217,7 @@ function ticket_notif_click(notificationID) {
     if (notificationID.indexOf('notif') !== -1) {
 
         var ticketID = notificationID.split('-')[1];
-        var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
+        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
         chrome.tabs.create({
             url: newURL
         });
@@ -248,7 +225,7 @@ function ticket_notif_click(notificationID) {
 
     } else if (notificationID.indexOf('multi-tickets') !== -1) {
 
-        var newURL = 'https://' + zendeskDomain + '.zendesk.com/agent/#/filters/' + viewID;
+        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + settings.viewID;
         chrome.tabs.create({
             url: newURL
         });
@@ -260,6 +237,52 @@ function ticket_notif_click(notificationID) {
 
 }
 
-chrome.notifications.onClicked.addListener(ticket_notif_click);
+function update_icon() {
+    if (settings.enabled == true) {
+        chrome.browserAction.setIcon({
+            path: 'icons/ZD-logo-19.png'
+        });
+    } else {
+        chrome.browserAction.setIcon({
+            path: 'icons/ZD-logo-gray-19.png'
+        });
+    }
+}
 
-// setInterval(doRequest, 600000); // every 600 seconds
+function badge_icon(number) {
+    chrome.browserAction.setBadgeBackgroundColor({
+        color: [0, 185, 242, 255]
+    });
+    chrome.browserAction.setBadgeText({
+        text: number.toString()
+    });
+}
+
+function test_request() {
+    console.log('interval: ' + settings.interval);
+}
+
+var myTimer;
+
+function autoCheck() {
+
+    var interval = settings.getInterval() * 1000;
+
+    if (myTimer) {
+        clearInterval(myTimer);
+    }
+    myTimer = setInterval(test_request, interval);
+}
+
+settings.load();
+
+
+// save settings when popup closes
+chrome.runtime.onConnect.addListener(function(port) {
+    port.onDisconnect.addListener(function() {
+        settings.save();
+    })
+})
+
+// click notifications to go to tickets
+chrome.notifications.onClicked.addListener(ticket_notif_click);

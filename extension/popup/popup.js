@@ -32,6 +32,7 @@ window.onload = function() {
 
             this.load();
             bg.update_icon();
+            bg.autoCheck();
         },
     }
 
