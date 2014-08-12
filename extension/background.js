@@ -47,7 +47,7 @@ var ticketIDArrayPrev = [];
 var ticketIDArrayCurrent = [];
 var ticketIDArrayNew = [];
 var ticketSubjects = [];
-
+var ticketPriorities = [];
 
 function error_message(status) {
 
@@ -123,11 +123,13 @@ function process_tickets(response) {
 
     ticketIDArrayCurrent = [];
     ticketSubjects = [];
+    ticketPriorities = [];
 
     tickets = response.tickets;
     for (var i = 0; i < tickets.length; i++) {
         ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
         ticketSubjects[tickets[i].id] = tickets[i].subject;
+        ticketPriorities[tickets[i].id] = tickets[i].priority;
     }
 };
 
@@ -145,7 +147,7 @@ function compare_tickets() {
     };
 
     // replace previous with current
-    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0);  // .slice(0) returns new array (like a copy function)
+    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0); // .slice(0) returns new array (like a copy function)
 }
 
 function notify_new_tickets() {
@@ -163,6 +165,7 @@ function notify_new_tickets() {
 function chrome_notify(title, msg) {
 
     if (msg == null) {
+
         msg = "";
     }
 
@@ -197,11 +200,19 @@ function chrome_notify_error(errorMsg) {
 function chrome_notify_tickets(ticketID) {
 
     var notificationID = "notif_" + Math.random() + "-" + ticketID;
+    var subText;
+
+    if (ticketPriorities[ticketID]) {
+        subText = "#" + ticketID + " (" + ticketPriorities[ticketID] + ")";
+    } else {
+        subText = "#" + ticketID
+    }
+
     var opt = {
         type: "basic",
         title: "New Case Submitted",
         message: '"' + ticketSubjects[ticketID] + '"',
-        contextMessage: "#" + ticketID,
+        contextMessage: subText,
         iconUrl: "icons/ticket-38.png",
     };
 
@@ -253,10 +264,12 @@ function ticket_notif_click(notificationID) {
 function update_icon() {
 
     if (settings.enabled == true) {
+
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-19.png'
         });
     } else {
+
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-gray-19.png'
         });
@@ -268,6 +281,7 @@ function badge_icon() {
     var number = ticketIDArrayNew.length;
 
     if (number > 0) {
+
         chrome.browserAction.setBadgeBackgroundColor({
             color: [0, 185, 242, 255]
         });
@@ -275,6 +289,7 @@ function badge_icon() {
             text: number.toString()
         });
     } else {
+
         chrome.browserAction.setBadgeText({
             text: ''
         });
@@ -293,12 +308,17 @@ var myTimer;
 function autoCheck() {
 
     if (settings.enabled == true) {
-        var interval = settings.getInterval() * 1000;
+
+        var interval = settings.getInterval() * 60000;
+
         if (myTimer) {
             clearInterval(myTimer);
         }
+
         myTimer = setInterval(test_request, interval);
+
     } else {
+
         clearInterval(myTimer);
     }
 
