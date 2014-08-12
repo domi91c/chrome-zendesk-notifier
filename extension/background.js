@@ -112,6 +112,8 @@ function doRequest(callback) {
 
 function doRequestInvoked() { // when "Check Now" is clicked
 
+    autoCheck();    // reset autocheck timer
+
     ticketIDArrayPrev = []; // reset tickets
 
     doRequest(function() {
@@ -222,7 +224,7 @@ function chrome_notify_tickets(ticketID) {
 
     var opt = {
         type: "basic",
-        title: "New Case Submitted",
+        title: "New Case",
         message: '"' + ticketSubjects[ticketID] + '"',
         contextMessage: subText,
         iconUrl: iconImage,
@@ -246,6 +248,31 @@ function chrome_notify_multi(numTickets) {
     chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
+}
+
+function ticket_notif_click2(notificationID) {
+
+    if (notificationID.indexOf('notif') !== -1) {
+
+        var ticketID = notificationID.split('-')[1];
+        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
+        chrome.tabs.create({
+            url: newURL
+        });
+        return;
+
+    } else if (notificationID.indexOf('multi-tickets') !== -1) {
+
+        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + settings.viewID;
+        chrome.tabs.create({
+            url: newURL
+        });
+
+    } else {
+
+        return;
+    };
+
 }
 
 function ticket_notif_click(notificationID) {
@@ -290,7 +317,7 @@ function update_icon() {
 
 function badge_icon() {
 
-    var number = ticketIDArrayNew.length;
+    var number = ticketIDArrayCurrent.length;
 
     if (number > 0) {
 
