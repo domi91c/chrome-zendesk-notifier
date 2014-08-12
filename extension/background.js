@@ -1,9 +1,9 @@
 var settings = {
-    enabled: null,
-    interval: null,
-    zendeskDomain: null,
-    viewID: null,
-    showErrors: null,
+    enabled: false,
+    interval: 1,
+    zendeskDomain: 'zendesk-domain',
+    viewID: 12345678,
+    showErrors: false,
 
     load: function() {
         var that = this;
@@ -112,7 +112,7 @@ function doRequest(callback) {
 
 function doRequestInvoked() { // when "Check Now" is clicked
 
-    autoCheck();    // reset autocheck timer
+    autoCheck(); // reset autocheck timer
 
     ticketIDArrayPrev = []; // reset tickets
 
@@ -363,13 +363,28 @@ function autoCheck() {
 
 }
 
-settings.load();
+chrome.storage.local.get(null, function(loaded) {
+    if (loaded.ranBefore && loaded.setBefore) {
+        console.log('app has been run and set before');
+        settings.load();
+        return;
+    }
+    console.log('first run');
+})
+
+chrome.storage.local.set({
+    'ranBefore': true
+});
+
 badge_icon(); // clear badge icon on start
 
 // save settings when popup closes
 chrome.runtime.onConnect.addListener(function(port) {
     port.onDisconnect.addListener(function() {
         settings.save();
+        chrome.storage.local.set({
+            'setBefore': true
+        });
     })
 })
 
