@@ -53,7 +53,15 @@
 * 
 
 # Resources
+### in use:
 * sad face icon:
 	* author: CrimsonAngelofShadow
 	* http://crimsonangelofshadow.deviantart.com/art/Innocent-Sad-Face-Icon-272714484
+* sparrow colored icons:
+	* author: YaroManzarek
+	* http://jacusan.deviantart.com/art/Sparrow-flavors-199914081
 	
+### to consider:
+
+* suitcase icons: http://rskys.deviantart.com/art/suitcase-icon-150587853
+* plastic colored boxes: http://tomeqq.deviantart.com/art/Plastic-Box-152707591

@@ -174,7 +174,7 @@ function chrome_notify(title, msg) {
         type: "basic",
         title: title,
         message: msg,
-        iconUrl: "icons/ticket-38.png",
+        iconUrl: "icons/box-64.png",
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
@@ -201,11 +201,23 @@ function chrome_notify_tickets(ticketID) {
 
     var notificationID = "notif_" + Math.random() + "-" + ticketID;
     var subText;
+    var iconImage
 
     if (ticketPriorities[ticketID]) {
+
         subText = "#" + ticketID + " (" + ticketPriorities[ticketID] + ")";
+
+        if (ticketPriorities[ticketID] == 'urgent') {
+            iconImage = 'icons/airplane-red-48.png'
+        } else if (ticketPriorities[ticketID] == 'high') {
+            iconImage = 'icons/airplane-yellow-48.png'
+        } else {
+            iconImage = 'icons/airplane-graphite-48.png';
+        }
     } else {
-        subText = "#" + ticketID
+
+        subText = "#" + ticketID;
+        iconImage = 'icons/airplane-graphite-48.png';
     }
 
     var opt = {
@@ -213,7 +225,7 @@ function chrome_notify_tickets(ticketID) {
         title: "New Case Submitted",
         message: '"' + ticketSubjects[ticketID] + '"',
         contextMessage: subText,
-        iconUrl: "icons/ticket-38.png",
+        iconUrl: iconImage,
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
@@ -228,7 +240,7 @@ function chrome_notify_multi(numTickets) {
         type: "basic",
         title: numTickets + " new cases",
         message: "Click me to go see them!",
-        iconUrl: "icons/ticket-38.png",
+        iconUrl: "icons/airplane-graphite-48.png",
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
@@ -315,7 +327,7 @@ function autoCheck() {
             clearInterval(myTimer);
         }
 
-        myTimer = setInterval(test_request, interval);
+        myTimer = setInterval(doRequest, interval);
 
     } else {
 
