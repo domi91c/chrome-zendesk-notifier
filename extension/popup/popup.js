@@ -20,6 +20,12 @@ window.onload = function() {
             inputDomain.value = bg.settings.zendeskDomain;
             inputViewID.value = bg.settings.viewID;
             checkboxShowErrors.checked = bg.settings.showErrors;
+
+            if (bg.settings.enabled == false) {
+                inputInterval.disabled = true;
+            } else {
+                inputInterval.disabled = false;
+            }
         },
         update: function() {
             // get new values from form and push to settings
@@ -37,10 +43,12 @@ window.onload = function() {
     }
 
     function enable_transition() {
+
         document.getElementById('interval-switch').style.WebkitTransition = 'margin-left 0.15s ease-in-out';
     }
 
     function parse_interval(interval) {
+
         if (interval.length > 2) {
             interval = interval.substring(0, 2);
         }
@@ -51,6 +59,7 @@ window.onload = function() {
     }
 
     function parse_viewID(viewID) {
+
         if (isNaN(viewID)) {
             viewID = null;
         }

@@ -83,22 +83,36 @@ function doRequest(callback) {
     xml.send();
 
     xml.onreadystatechange = function() {
+
         if (xml.readyState === 4) {
+
             if (xml.status === 200) {
+
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
+
                 if (ticketIDArrayNew.length == 0 && callback) {
                     callback();
-                };
-                notify_new_tickets();
+                } else {
+                    notify_new_tickets();
+                }
+
+                badge_icon();
+
             } else {
-                chrome_notify_error(error_message(xml.status));
+
+                if (settings.showErrors == true || callback) {
+                    chrome_notify_error(error_message(xml.status));
+                }
+
             }
         }
     };
 };
 
-function doRequestInvoked() {
+function doRequestInvoked() { // when "Check Now" is clicked
+
+    ticketIDArrayPrev = []; // reset tickets
 
     doRequest(function() {
         chrome_notify('No new cases!', null);
@@ -129,10 +143,9 @@ function compare_tickets() {
             ticketIDArrayNew.push(thisTicket); // ...it's new
         }
     };
-    // console.log('new tickets: ' + ticketIDArrayNew);
 
     // replace previous with current
-    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0);
+    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0);  // .slice(0) returns new array (like a copy function)
 }
 
 function notify_new_tickets() {
@@ -183,7 +196,7 @@ function chrome_notify_error(errorMsg) {
 
 function chrome_notify_tickets(ticketID) {
 
-    var notificationID = "notif-" + ticketID;
+    var notificationID = "notif_" + Math.random() + "-" + ticketID;
     var opt = {
         type: "basic",
         title: "New Case Submitted",
@@ -238,6 +251,7 @@ function ticket_notif_click(notificationID) {
 }
 
 function update_icon() {
+
     if (settings.enabled == true) {
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-19.png'
@@ -249,16 +263,28 @@ function update_icon() {
     }
 }
 
-function badge_icon(number) {
-    chrome.browserAction.setBadgeBackgroundColor({
-        color: [0, 185, 242, 255]
-    });
-    chrome.browserAction.setBadgeText({
-        text: number.toString()
-    });
+function badge_icon() {
+
+    var number = ticketIDArrayNew.length;
+
+    if (number > 0) {
+        chrome.browserAction.setBadgeBackgroundColor({
+            color: [0, 185, 242, 255]
+        });
+        chrome.browserAction.setBadgeText({
+            text: number.toString()
+        });
+    } else {
+        chrome.browserAction.setBadgeText({
+            text: ''
+        });
+    }
+
+
 }
 
 function test_request() {
+
     console.log('interval: ' + settings.interval);
 }
 
@@ -266,16 +292,20 @@ var myTimer;
 
 function autoCheck() {
 
-    var interval = settings.getInterval() * 1000;
-
-    if (myTimer) {
+    if (settings.enabled == true) {
+        var interval = settings.getInterval() * 1000;
+        if (myTimer) {
+            clearInterval(myTimer);
+        }
+        myTimer = setInterval(test_request, interval);
+    } else {
         clearInterval(myTimer);
     }
-    myTimer = setInterval(test_request, interval);
+
 }
 
 settings.load();
-
+badge_icon(); // clear badge icon on start
 
 // save settings when popup closes
 chrome.runtime.onConnect.addListener(function(port) {
