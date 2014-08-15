@@ -29,9 +29,9 @@
 	* http://developer.zendesk.com/documentation/rest_api/ticket_export.html
 
 # Features to implement
-* *if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.*
-* allow user to turn on/off
-* allow user to specify domain and refresh interval
+* ~~if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.~~
+* ~~allow user to turn on/off~~* 
+* ~~allow user to specify domain and refresh interval~~
 * option to open in new tab or current zendesk window/tab
 * "check now" button should have option to show any tickets in view, or just new tickets from last check
 * dequeue requests so that error message don't pile up when unable to connect (or computer goes to sleep)
@@ -39,18 +39,24 @@
 	* checks for unassigned tickets in a specific view
 
 ### V1.01
-* More functional "check now" button
-	* also resets. No need for extra "reset" button
+* ~~More functional "check now" button~~
+	* ~~also resets. No need for extra "reset" button~~
 	* button shows feedback overlay
 		* green check if succeed
 		* red x if failed
-* on/off shows feedback
-	* disables internal text input when off
-* smart interval text-input
-	* only 2 digits, auto corrects invalid input to 1 min
-* show error messages off by default
-* extension icon shows feedback (gray, on/off state)
-* 
+* ~~on/off shows feedback~~
+	* ~~disables internal text input when off~~
+* ~~smart interval text-input~~
+	* ~~only 2 digits, auto corrects invalid input to 1 min~~
+* ~~show error messages off by default~~
+* ~~extension icon shows feedback (gray, on/off state)~~
+
+### V1.02
+* make badge icon auto-update at 1 min intervals regardless of rich notification on/off settings
+	* exponential backoff on failure
+	* show red "?" on failure
+* remove interval setting, only leave notification toggle switch.
+* [maybe] remove option to show errors. Only show errors during check now, and use the "?" badge icon to indicate errors otherwise
 
 # Resources
 ### in use:
