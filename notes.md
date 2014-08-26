@@ -57,6 +57,12 @@
 	* show red "?" on failure
 * remove interval setting, only leave notification toggle switch.
 * [maybe] remove option to show errors. Only show errors during check now, and use the "?" badge icon to indicate errors otherwise
+* **Include notification of tickets that are about to expire**
+
+### V2.x
+* new ticket view page, accessed by clicking app icon
+	* move options to separate page
+
 
 # Resources
 ### in use:
