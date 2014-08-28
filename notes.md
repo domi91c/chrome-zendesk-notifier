@@ -62,6 +62,9 @@
 ### V2.x
 * new ticket view page, accessed by clicking app icon
 	* move options to separate page
+* push notifications so tickets
+* make tickets appear one at a time, instead of all at once (blocking screen)
+* 
 
 
 # Resources
@@ -77,3 +80,4 @@
 
 * suitcase icons: http://rskys.deviantart.com/art/suitcase-icon-150587853
 * plastic colored boxes: http://tomeqq.deviantart.com/art/Plastic-Box-152707591
+* alert icons: http://www.shutterstock.com/pic-183631826/stock-vector-information-and-notification-simple-color-icons.html?src=umY9C-uI97QVwrouZyKKag-1-14
