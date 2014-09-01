@@ -291,9 +291,9 @@ function chrome_notify_tickets(ticket) {
 
     var opt = {
         type: "basic",
-        title: "New Case",
-        message: '"' + ticket.subject + '"',
-        contextMessage: subText,
+        title: ticket.subject,
+        message: ticket.description,
+        // contextMessage: subText,
         iconUrl: iconImage,
     };
 
