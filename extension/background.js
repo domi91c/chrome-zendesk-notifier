@@ -18,7 +18,8 @@ var settings = {
                 that.interval = 1;
             }
             autoCheck();
-        })
+        });
+        update_icon();
 
     },
     getInterval: function() {
@@ -84,6 +85,9 @@ function doRequest(callback) {
 
     xml.onreadystatechange = function() {
 
+        var debug = "firing xml readystate handler..." + xml.readyState;
+        console.log(debug);
+
         if (xml.readyState === 4) {
 
             if (xml.status === 200) {
@@ -104,15 +108,18 @@ function doRequest(callback) {
                 if (settings.showErrors == true || callback) {
                     chrome_notify_error(error_message(xml.status));
                 }
-
             }
+            autoCheck();
         }
     };
 };
 
 function doRequestInvoked() { // when "Check Now" is clicked
 
-    autoCheck(); // reset autocheck timer
+    if (myTimer) {  // reset autocheck timer
+        console.log("invoked, timer cleared");
+        clearTimeout(myTimer);
+    }
 
     ticketIDArrayPrev = []; // reset tickets
 
@@ -346,21 +353,24 @@ var myTimer;
 
 function autoCheck() {
 
+    console.log("firing autocheck");
+
+// starts repeated checks if settings indicate true
+// clears timer if settings indicate false
+
     if (settings.enabled == true) {
 
-        var interval = settings.getInterval() * 60000;
+        // var interval = settings.getInterval() * 60000;
+        var interval = settings.getInterval() * 5000;
 
-        if (myTimer) {
-            clearInterval(myTimer);
-        }
-
-        myTimer = setInterval(doRequest, interval);
+        console.log("set new timeout.");
+        myTimer = setTimeout(doRequest, interval);
 
     } else {
 
-        clearInterval(myTimer);
+        console.log("cleared timeout.");
+        clearTimeout(myTimer);
     }
-
 }
 
 chrome.storage.local.get(null, function(loaded) {
