@@ -235,10 +235,8 @@ function chrome_notify_tickets(ticketID) {
 
     var opt = {
         type: "basic",
-        // title: "New Case",
-        // message: '"' + ticketSubjects[ticketID] + '"',
-        title: ticketSubjects[ticketID],
-        message: "This is a test message and the quick brown fox jumped over the lazy dog argus parkus loves parkour and rocks the guitar on weekends.",
+        title: "New Case",
+        message: '"' + ticketSubjects[ticketID] + '"',
         contextMessage: subText,
         iconUrl: iconImage,
     };
