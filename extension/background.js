@@ -243,7 +243,7 @@ function chrome_notify(title, msg) {
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
-        console.info('notification ' + notificationID + ' created');
+        console.log('notification ' + notificationID + ' created');
     });
 }
 
@@ -258,7 +258,7 @@ function chrome_notify_error(errorMsg) {
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
-        console.info('notification ' + notificationID + ' created');
+        console.log('notification ' + notificationID + ' created');
     });
 }
 
@@ -294,7 +294,7 @@ function chrome_notify_tickets(ticket) {
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
-        console.info('notification ' + notificationID + ' created');
+        console.log('notification ' + notificationID + ' created');
     });
 }
 
@@ -309,7 +309,7 @@ function chrome_notify_multi(numTickets) {
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
-        console.info('notification ' + notificationID + ' created');
+        console.log('notification ' + notificationID + ' created');
     });
 }
 
