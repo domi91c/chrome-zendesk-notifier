@@ -1,3 +1,5 @@
+// console.log = function(){};
+
 var settings = {
     enabled: false,
     interval: 1,
@@ -49,6 +51,26 @@ var ticketIDArrayNew = [];
 var ticketSubjects = [];
 var ticketPriorities = [];
 var myTimer;
+
+var ticketsArray = [];
+// var ticketsArray = [{
+//                     id: 123,
+//                     created_at: "2014-09-01T04:42:13Z",
+//                     subject: "My app isn't working!",
+//                     description: "when I opened it up it did this and that and this",
+//                     priority: "high",
+//                     status: "new",
+//                     organization_id: 27307765,
+//                 },
+//                 {
+//                     id: 321,
+//                     created_at: "2014-09-01T04:42:13Z",
+//                     subject: "My app isn't working!",
+//                     description: "when I opened it up it did this and that and this",
+//                     priority: "high",
+//                     status: "new",
+//                     organization_id: 27307765,
+//                 }];
 
 function error_message(status) {
 
@@ -138,12 +160,17 @@ function process_tickets(response) {
     ticketSubjects = [];
     ticketPriorities = [];
 
-    tickets = response.tickets;
+    var tickets = response.tickets;
     for (var i = 0; i < tickets.length; i++) {
         ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
         ticketSubjects[tickets[i].id] = tickets[i].subject;
         ticketPriorities[tickets[i].id] = tickets[i].priority;
-    }
+    };
+
+    for (var i = 0; i < tickets.length; i++) {
+        ticketsArray.push(tickets[i]);
+    };
+
 };
 
 function compare_tickets() {
