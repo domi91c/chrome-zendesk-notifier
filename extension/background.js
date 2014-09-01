@@ -322,18 +322,11 @@ function ticket_notif_click(notificationID) {
     if (notificationID.indexOf('notif') !== -1) {
 
         var ticketID = notificationID.split('-')[1];
-        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
-        chrome.tabs.create({
-            url: newURL
-        });
-        return;
+        launch_zd_ticket(ticketID);
 
     } else if (notificationID.indexOf('multi-tickets') !== -1) {
 
-        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + settings.viewID;
-        chrome.tabs.create({
-            url: newURL
-        });
+        launch_zd_view(settings.viewID);
 
     } else {
 
@@ -343,33 +336,34 @@ function ticket_notif_click(notificationID) {
 
 function launch_zd_ticket(ticketID) {
 
-    console.log("launching ticket");
-
     var tabQuery = {
         url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
         // active: false
     }
 
     function open_and_focus(tabs) {
-        
+
         var ZDtab = tabs[0];
 
         if (ZDtab) {
+
             var hash = '#/tickets/' + ticketID;
 
             chrome.tabs.executeScript(ZDtab.id, {
                 code: 'window.location.hash = "' + hash + '";'
             });
-
             chrome.tabs.update(ZDtab.id, {
                 active: true
             });
-
             chrome.windows.update(ZDtab.windowId, {
                 focused: true
             })
         } else {
-            console.log('no tab found');
+
+            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
+            chrome.tabs.create({
+                url: newURL
+            });
         };
     };
 
@@ -377,8 +371,41 @@ function launch_zd_ticket(ticketID) {
 }
 
 
+function launch_zd_view(viewID) {
 
+    var tabQuery = {
+        url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
+        // active: false
+    }
 
+    function open_and_focus(tabs) {
+
+        var ZDtab = tabs[0];
+
+        if (ZDtab) {
+
+            var hash = '#/filters/' + viewID;
+
+            chrome.tabs.executeScript(ZDtab.id, {
+                code: 'window.location.hash = "' + hash + '";'
+            });
+            chrome.tabs.update(ZDtab.id, {
+                active: true
+            });
+            chrome.windows.update(ZDtab.windowId, {
+                focused: true
+            })
+        } else {
+
+            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + viewID;
+            chrome.tabs.create({
+                url: newURL
+            });
+        };
+    };
+
+    chrome.tabs.query(tabQuery, open_and_focus);
+}
 
 function update_icon() {
 
@@ -472,5 +499,4 @@ chrome.runtime.onConnect.addListener(function(port) {
 })
 
 // click notifications to go to tickets
-// chrome.notifications.onClicked.addListener(ticket_notif_click);
-chrome.notifications.onClicked.addListener(launch_zd_ticket);
+chrome.notifications.onClicked.addListener(ticket_notif_click);
