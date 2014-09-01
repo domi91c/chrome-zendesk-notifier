@@ -32,14 +32,14 @@
 * ~~if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.~~
 * ~~allow user to turn on/off~~* 
 * ~~allow user to specify domain and refresh interval~~
-* option to open in new tab or current zendesk window/tab
-	* to open in current zendesk tab: `window.location.hash = "#/tickets/4"`
+* ~~option to open in new tab or current zendesk window/tab~~
+	* ~~to open in current zendesk tab: `window.location.hash = "#/tickets/4"`~~
 * "check now" button should have option to show any tickets in view, or just new tickets from last check
 * dequeue requests so that error message don't pile up when unable to connect (or computer goes to sleep)
 * Triage mode
 	* checks for unassigned tickets in a specific view
 
-### V1.01
+### V1.1.0
 * ~~More functional "check now" button~~
 	* ~~also resets. No need for extra "reset" button~~
 	* button shows feedback overlay
@@ -52,7 +52,7 @@
 * ~~show error messages off by default~~
 * ~~extension icon shows feedback (gray, on/off state)~~
 
-### V1.02
+### V1.1.2
 * make badge icon auto-update at 1 min intervals regardless of rich notification on/off settings
 	* exponential backoff on failure
 	* show red "?" on failure
