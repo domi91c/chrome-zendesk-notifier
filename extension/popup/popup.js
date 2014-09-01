@@ -38,6 +38,7 @@ window.onload = function() {
 
             this.load();
             bg.update_icon();
+            bg.badge_icon();
             bg.autoCheck();
         },
     }

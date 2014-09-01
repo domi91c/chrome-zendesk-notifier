@@ -329,19 +329,24 @@ function update_icon() {
 function badge_icon(custom_string) {
 
     var number = ticketIDArrayCurrent.length;
-    var badgeColor = {color: [150, 150, 150, 255]};
+    var badgeColor = [150, 150, 150, 255];
     var badgeText = "";
 
     if (custom_string) {
-        badgeColor = {color: [255, 0, 0, 255]};
+        badgeColor = [255, 0, 0, 255];
         badgeText = custom_string;
 
     } else if (number > 0) {
-        badgeColor = {color: [0, 185, 242, 255]};
+
+        if (settings.enabled == true) {
+            badgeColor = [0, 185, 242, 255];    
+        } else {
+            badgeColor = [150, 150, 150, 255];    
+        }
         badgeText = number.toString()
     }
 
-    chrome.browserAction.setBadgeBackgroundColor(badgeColor);
+    chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
     chrome.browserAction.setBadgeText({text: badgeText});
 
 }
