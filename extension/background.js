@@ -52,6 +52,7 @@ var ticketSubjects = [];
 var ticketPriorities = [];
 var myTimer;
 
+
 var ticketsArray = [];
 // var ticketsArray = [{
 //                     id: 123,
@@ -166,6 +167,8 @@ function process_tickets(response) {
         ticketSubjects[tickets[i].id] = tickets[i].subject;
         ticketPriorities[tickets[i].id] = tickets[i].priority;
     };
+
+
 
     for (var i = 0; i < tickets.length; i++) {
         ticketsArray.push(tickets[i]);
