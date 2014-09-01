@@ -6,7 +6,10 @@
         "scripts": ["background.js"]
     },
     "permissions": [
-        "https://*.zendesk.com/", "notifications", "storage"
+        "https://*.zendesk.com/",
+        "notifications",
+        "storage",
+        "tabs"
     ],
     "browser_action": {
         "default_icon": {
