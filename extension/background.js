@@ -1,5 +1,16 @@
 // console.log = function(){};
 
+// =================
+// Debug functions:
+
+function printObj(object) {
+    return JSON.stringify(object, null, 4);
+};
+
+
+
+// =================
+
 var settings = {
     enabled: false,
     interval: 1,
@@ -50,10 +61,10 @@ var ticketIDArrayCurrent = [];
 var ticketIDArrayNew = [];
 var ticketSubjects = [];
 var ticketPriorities = [];
-var myTimer;
 
-
-var ticketsArray = [];
+var ticketsCurrent = [];
+var ticketsPrevious = [];
+var ticketsNew = [];
 // var ticketsArray = [{
 //                     id: 123,
 //                     created_at: "2014-09-01T04:42:13Z",
@@ -72,6 +83,9 @@ var ticketsArray = [];
 //                     status: "new",
 //                     organization_id: 27307765,
 //                 }];
+
+
+var myTimer;
 
 function error_message(status) {
 
@@ -109,7 +123,7 @@ function doRequest(callback) {
     xml.onreadystatechange = function() {
 
         var debug = "firing xml readystate handler..." + xml.readyState;
-        console.log(debug);
+        // console.log(debug);
 
         if (xml.readyState === 4) {
 
@@ -118,7 +132,7 @@ function doRequest(callback) {
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
 
-                if (ticketIDArrayNew.length == 0 && callback) {
+                if (ticketsNew.length == 0 && callback) {
                     callback();
                 } else {
                     notify_new_tickets();
@@ -168,47 +182,61 @@ function process_tickets(response) {
         ticketPriorities[tickets[i].id] = tickets[i].priority;
     };
 
+    // ------------
 
+    ticketsCurrent = [];
 
     for (var i = 0; i < tickets.length; i++) {
-        ticketsArray.push(tickets[i]);
+        ticketsCurrent.push(tickets[i]);
     };
 
 };
 
 function compare_tickets() {
 
-    var thisTicket;
-    ticketIDArrayNew = [];
+    ticketsNew = [];
 
-    // compare current with previous
-    for (var i = 0; i < ticketIDArrayCurrent.length; i++) {
-        thisTicket = ticketIDArrayCurrent[i];
-        if (ticketIDArrayPrev.indexOf(thisTicket) == -1) { // if a current ticket is not found in previous array...
-            ticketIDArrayNew.push(thisTicket); // ...it's new
+    // 1. find all the current tickets that are not in ticketsPrevious
+    for (var i = 0; i < ticketsCurrent.length; i++) {
+        if (!ticket_in_array(ticketsCurrent[i], ticketsPrevious)) {
+
+            // 2. push these tickets into ticketsNew
+            console.log("pushing new ticket: " + ticketsCurrent[i].id);
+            ticketsNew.push(ticketsCurrent[i]);
         }
-    };
+    }
 
-    // replace previous with current
-    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0); // .slice(0) returns new array (like a copy function)
+    // 3. replace ticketsPrevious tickets with ticketsCurrent
+    ticketsPrevious = ticketsCurrent.slice(0);
+}
+
+function ticket_in_array(ticket, array) {
+    // returns whether a ticket object exists in a given array of ticket objects
+    // uses ticket ID as basis of determination
+
+    for (var i = 0; i < array.length; i++) {
+        if (ticket.id === array[i].id) {
+            return true;
+        };
+    };
+    return false;
 }
 
 function notify_new_tickets() {
 
-    if (ticketIDArrayNew.length > 3) {
-        chrome_notify_multi(ticketIDArrayNew.length);
+    if (ticketsNew.length > 3) {
+        chrome_notify_multi(ticketsNew.length);
         return;
     }
 
-    for (var i = 0; i < ticketIDArrayNew.length; i++) {
-        chrome_notify_tickets(ticketIDArrayNew[i]);
+    for (var i = 0; i < ticketsNew.length; i++) {
+        chrome_notify_tickets(ticketsNew[i].id);
     };
 }
 
 function chrome_notify(title, msg) {
 
     if (msg == null) {
-
         msg = "";
     }
 
