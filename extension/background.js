@@ -4,8 +4,7 @@
 function printObj(object) {
     return JSON.stringify(object, null, 4);
 };
-// console.log = function(){};
-
+console.log = function(){};
 // =================
 
 var settings = {
@@ -166,10 +165,7 @@ function doRequest(callback) {
 
 function doRequestInvoked() { // when "Check Now" is clicked
 
-    if (myTimer) {  // reset timer
-        console.log("invoked, timer cleared");
-        clearTimeout(myTimer);
-    }
+    clearTimeout(myTimer);
 
     ticketsPrevious = []; // reset tickets
 
@@ -322,11 +318,11 @@ function ticket_notif_click(notificationID) {
     if (notificationID.indexOf('notif') !== -1) {
 
         var ticketID = notificationID.split('-')[1];
-        launch_zd_ticket(ticketID);
+        launch_zd_link(ticketID);
 
     } else if (notificationID.indexOf('multi-tickets') !== -1) {
 
-        launch_zd_view(settings.viewID);
+        launch_zd_link(settings.viewID, true);
 
     } else {
 
@@ -334,7 +330,15 @@ function ticket_notif_click(notificationID) {
     };
 }
 
-function launch_zd_ticket(ticketID) {
+function launch_zd_link(objectID, isView) {
+
+    var objectURL;
+
+    if (isView) {
+        objectURL = '#/filters/';
+    } else {
+        objectURL = '#/tickets/'; 
+    }
 
     var tabQuery = {
         url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
@@ -347,7 +351,7 @@ function launch_zd_ticket(ticketID) {
 
         if (ZDtab) {
 
-            var hash = '#/tickets/' + ticketID;
+            var hash = objectURL + objectID;
 
             chrome.tabs.executeScript(ZDtab.id, {
                 code: 'window.location.hash = "' + hash + '";'
@@ -360,44 +364,7 @@ function launch_zd_ticket(ticketID) {
             })
         } else {
 
-            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
-            chrome.tabs.create({
-                url: newURL
-            });
-        };
-    };
-
-    chrome.tabs.query(tabQuery, open_and_focus);
-}
-
-
-function launch_zd_view(viewID) {
-
-    var tabQuery = {
-        url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
-        // active: false
-    }
-
-    function open_and_focus(tabs) {
-
-        var ZDtab = tabs[0];
-
-        if (ZDtab) {
-
-            var hash = '#/filters/' + viewID;
-
-            chrome.tabs.executeScript(ZDtab.id, {
-                code: 'window.location.hash = "' + hash + '";'
-            });
-            chrome.tabs.update(ZDtab.id, {
-                active: true
-            });
-            chrome.windows.update(ZDtab.windowId, {
-                focused: true
-            })
-        } else {
-
-            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + viewID;
+            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/' + objectURL + objectID;
             chrome.tabs.create({
                 url: newURL
             });
@@ -463,8 +430,8 @@ function autoCheck() {
     
     if (settings.enabled == true) {
 
-        // var interval = settings.getInterval() * 60000;
-        var interval = settings.getInterval() * 5000;
+        var interval = settings.getInterval() * 60000;
+        // var interval = settings.getInterval() * 5000;
 
         console.log("set new timeout");
         myTimer = setTimeout(doRequest, interval);
