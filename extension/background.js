@@ -1,13 +1,10 @@
-// console.log = function(){};
-
 // =================
 // Debug functions:
 
 function printObj(object) {
     return JSON.stringify(object, null, 4);
 };
-
-
+// console.log = function(){};
 
 // =================
 
@@ -56,34 +53,46 @@ var settings = {
     }
 }
 
-var ticketIDArrayPrev = [];
-var ticketIDArrayCurrent = [];
-var ticketIDArrayNew = [];
-var ticketSubjects = [];
-var ticketPriorities = [];
-
 var ticketsCurrent = [];
 var ticketsPrevious = [];
 var ticketsNew = [];
-// var ticketsArray = [{
-//                     id: 123,
-//                     created_at: "2014-09-01T04:42:13Z",
-//                     subject: "My app isn't working!",
-//                     description: "when I opened it up it did this and that and this",
-//                     priority: "high",
-//                     status: "new",
-//                     organization_id: 27307765,
-//                 },
-//                 {
-//                     id: 321,
-//                     created_at: "2014-09-01T04:42:13Z",
-//                     subject: "My app isn't working!",
-//                     description: "when I opened it up it did this and that and this",
-//                     priority: "high",
-//                     status: "new",
-//                     organization_id: 27307765,
-//                 }];
-
+var ticketsExample = [{
+            "url": "https://wdc7.zendesk.com/api/v2/tickets/3.json",
+            "id": 3,
+            "external_id": null,
+            "via": {
+                "channel": "web",
+                "source": {
+                    "from": {},
+                    "to": {},
+                    "rel": null
+                }
+            },
+            "created_at": "2014-09-01T04:42:13Z",
+            "updated_at": "2014-09-01T04:42:13Z",
+            "type": null,
+            "subject": "Baboom this is a new ticket",
+            "raw_subject": "Baboom this is a new ticket",
+            "description": "hey there sweetheart!",
+            "priority": null,
+            "status": "open",
+            "recipient": null,
+            "requester_id": 364410045,
+            "submitter_id": 364410045,
+            "assignee_id": 364410045,
+            "organization_id": 27307765,
+            "group_id": 21951885,
+            "collaborator_ids": [],
+            "forum_topic_id": null,
+            "problem_id": null,
+            "has_incidents": false,
+            "due_at": null,
+            "tags": [],
+            "custom_fields": [],
+            "satisfaction_rating": null,
+            "sharing_agreement_ids": [],
+            "fields": []
+        }];
 
 var myTimer;
 
@@ -162,7 +171,7 @@ function doRequestInvoked() { // when "Check Now" is clicked
         clearTimeout(myTimer);
     }
 
-    ticketIDArrayPrev = []; // reset tickets
+    ticketsPrevious = []; // reset tickets
 
     doRequest(function() {
         chrome_notify('No new cases!', null);
@@ -171,18 +180,7 @@ function doRequestInvoked() { // when "Check Now" is clicked
 
 function process_tickets(response) {
 
-    ticketIDArrayCurrent = [];
-    ticketSubjects = [];
-    ticketPriorities = [];
-
     var tickets = response.tickets;
-    for (var i = 0; i < tickets.length; i++) {
-        ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
-        ticketSubjects[tickets[i].id] = tickets[i].subject;
-        ticketPriorities[tickets[i].id] = tickets[i].priority;
-    };
-
-    // ------------
 
     ticketsCurrent = [];
 
@@ -230,7 +228,7 @@ function notify_new_tickets() {
     }
 
     for (var i = 0; i < ticketsNew.length; i++) {
-        chrome_notify_tickets(ticketsNew[i].id);
+        chrome_notify_tickets(ticketsNew[i]);
     };
 }
 
@@ -268,33 +266,33 @@ function chrome_notify_error(errorMsg) {
     });
 }
 
-function chrome_notify_tickets(ticketID) {
+function chrome_notify_tickets(ticket) {
 
-    var notificationID = "notif_" + Math.random() + "-" + ticketID;
+    var notificationID = "notif_" + Math.random() + "-" + ticket.id;
     var subText;
     var iconImage
 
-    if (ticketPriorities[ticketID]) {
+    if (ticket.priority != null) {
 
-        subText = "#" + ticketID + " (" + ticketPriorities[ticketID] + ")";
+        subText = "#" + ticket.id + " (" + ticket.priority + ")";
 
-        if (ticketPriorities[ticketID] == 'urgent') {
+        if (ticket.priority == 'urgent') {
             iconImage = 'icons/airplane-red-48.png'
-        } else if (ticketPriorities[ticketID] == 'high') {
+        } else if (ticket.priority == 'high') {
             iconImage = 'icons/airplane-yellow-48.png'
         } else {
             iconImage = 'icons/airplane-graphite-48.png';
         }
     } else {
 
-        subText = "#" + ticketID;
+        subText = "#" + ticket.id;
         iconImage = 'icons/airplane-graphite-48.png';
     }
 
     var opt = {
         type: "basic",
         title: "New Case",
-        message: '"' + ticketSubjects[ticketID] + '"',
+        message: '"' + ticket.subject + '"',
         contextMessage: subText,
         iconUrl: iconImage,
     };
@@ -386,7 +384,7 @@ function update_icon() {
 
 function badge_icon(custom_string) {
 
-    var number = ticketIDArrayCurrent.length;
+    var number = ticketsCurrent.length;
     var badgeColor = [150, 150, 150, 255];
     var badgeText = "";
 
