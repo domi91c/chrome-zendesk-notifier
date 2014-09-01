@@ -18,9 +18,8 @@ var settings = {
                 that.interval = 1;
             }
             autoCheck();
+            update_icon();
         });
-        update_icon();
-
     },
     getInterval: function() {
         if (this.interval < 1) {
@@ -108,6 +107,9 @@ function doRequest(callback) {
                 if (settings.showErrors == true || callback) {
                     chrome_notify_error(error_message(xml.status));
                 }
+
+                badge_icon("?");
+
             }
             autoCheck();
         }
@@ -322,15 +324,21 @@ function update_icon() {
     }
 }
 
-function badge_icon() {
+function badge_icon(custom_string) {
 
     var number = ticketIDArrayCurrent.length;
+    var color = {color: [150, 150, 150, 255]};
 
-    if (number > 0) {
-
-        chrome.browserAction.setBadgeBackgroundColor({
-            color: [0, 185, 242, 255]
+    if (custom_string) {
+        color = {color: [255, 0, 0, 255]};
+        
+        chrome.browserAction.setBadgeText({
+            text: custom_string
         });
+
+    } else if (number > 0) {
+        color = {color: [0, 185, 242, 255]};
+
         chrome.browserAction.setBadgeText({
             text: number.toString()
         });
@@ -341,6 +349,7 @@ function badge_icon() {
         });
     }
 
+    chrome.browserAction.setBadgeBackgroundColor(color);
 
 }
 
