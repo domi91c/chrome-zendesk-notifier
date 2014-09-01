@@ -1,3 +1,13 @@
+// =================
+// Debug functions:
+
+function printObj(object) {
+    return JSON.stringify(object, null, 4);
+};
+// console.log = function(){};
+
+// =================
+
 var settings = {
     enabled: false,
     interval: 1,
@@ -43,11 +53,47 @@ var settings = {
     }
 }
 
-var ticketIDArrayPrev = [];
-var ticketIDArrayCurrent = [];
-var ticketIDArrayNew = [];
-var ticketSubjects = [];
-var ticketPriorities = [];
+var ticketsCurrent = [];
+var ticketsPrevious = [];
+var ticketsNew = [];
+var ticketsExample = [{
+            "url": "https://wdc7.zendesk.com/api/v2/tickets/3.json",
+            "id": 3,
+            "external_id": null,
+            "via": {
+                "channel": "web",
+                "source": {
+                    "from": {},
+                    "to": {},
+                    "rel": null
+                }
+            },
+            "created_at": "2014-09-01T04:42:13Z",
+            "updated_at": "2014-09-01T04:42:13Z",
+            "type": null,
+            "subject": "Baboom this is a new ticket",
+            "raw_subject": "Baboom this is a new ticket",
+            "description": "hey there sweetheart!",
+            "priority": null,
+            "status": "open",
+            "recipient": null,
+            "requester_id": 364410045,
+            "submitter_id": 364410045,
+            "assignee_id": 364410045,
+            "organization_id": 27307765,
+            "group_id": 21951885,
+            "collaborator_ids": [],
+            "forum_topic_id": null,
+            "problem_id": null,
+            "has_incidents": false,
+            "due_at": null,
+            "tags": [],
+            "custom_fields": [],
+            "satisfaction_rating": null,
+            "sharing_agreement_ids": [],
+            "fields": []
+        }];
+
 var myTimer;
 
 function error_message(status) {
@@ -86,7 +132,7 @@ function doRequest(callback) {
     xml.onreadystatechange = function() {
 
         var debug = "firing xml readystate handler..." + xml.readyState;
-        console.log(debug);
+        // console.log(debug);
 
         if (xml.readyState === 4) {
 
@@ -95,7 +141,7 @@ function doRequest(callback) {
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
 
-                if (ticketIDArrayNew.length == 0 && callback) {
+                if (ticketsNew.length == 0 && callback) {
                     callback();
                 } else {
                     notify_new_tickets();
@@ -125,7 +171,7 @@ function doRequestInvoked() { // when "Check Now" is clicked
         clearTimeout(myTimer);
     }
 
-    ticketIDArrayPrev = []; // reset tickets
+    ticketsPrevious = []; // reset tickets
 
     doRequest(function() {
         chrome_notify('No new cases!', null);
@@ -134,51 +180,61 @@ function doRequestInvoked() { // when "Check Now" is clicked
 
 function process_tickets(response) {
 
-    ticketIDArrayCurrent = [];
-    ticketSubjects = [];
-    ticketPriorities = [];
+    var tickets = response.tickets;
 
-    tickets = response.tickets;
+    ticketsCurrent = [];
+
     for (var i = 0; i < tickets.length; i++) {
-        ticketIDArrayCurrent.push(tickets[i].id); // add ticket ID to ticketIDArrayCurrent
-        ticketSubjects[tickets[i].id] = tickets[i].subject;
-        ticketPriorities[tickets[i].id] = tickets[i].priority;
-    }
+        ticketsCurrent.push(tickets[i]);
+    };
+
 };
 
 function compare_tickets() {
 
-    var thisTicket;
-    ticketIDArrayNew = [];
+    ticketsNew = [];
 
-    // compare current with previous
-    for (var i = 0; i < ticketIDArrayCurrent.length; i++) {
-        thisTicket = ticketIDArrayCurrent[i];
-        if (ticketIDArrayPrev.indexOf(thisTicket) == -1) { // if a current ticket is not found in previous array...
-            ticketIDArrayNew.push(thisTicket); // ...it's new
+    // 1. find all the current tickets that are not in ticketsPrevious
+    for (var i = 0; i < ticketsCurrent.length; i++) {
+        if (!ticket_in_array(ticketsCurrent[i], ticketsPrevious)) {
+
+            // 2. push these tickets into ticketsNew
+            console.log("pushing new ticket: " + ticketsCurrent[i].id);
+            ticketsNew.push(ticketsCurrent[i]);
         }
-    };
+    }
 
-    // replace previous with current
-    ticketIDArrayPrev = ticketIDArrayCurrent.slice(0); // .slice(0) returns new array (like a copy function)
+    // 3. replace ticketsPrevious tickets with ticketsCurrent
+    ticketsPrevious = ticketsCurrent.slice(0);
+}
+
+function ticket_in_array(ticket, array) {
+    // returns whether a ticket object exists in a given array of ticket objects
+    // uses ticket ID as basis of determination
+
+    for (var i = 0; i < array.length; i++) {
+        if (ticket.id === array[i].id) {
+            return true;
+        };
+    };
+    return false;
 }
 
 function notify_new_tickets() {
 
-    if (ticketIDArrayNew.length > 3) {
-        chrome_notify_multi(ticketIDArrayNew.length);
+    if (ticketsNew.length > 3) {
+        chrome_notify_multi(ticketsNew.length);
         return;
     }
 
-    for (var i = 0; i < ticketIDArrayNew.length; i++) {
-        chrome_notify_tickets(ticketIDArrayNew[i]);
+    for (var i = 0; i < ticketsNew.length; i++) {
+        chrome_notify_tickets(ticketsNew[i]);
     };
 }
 
 function chrome_notify(title, msg) {
 
     if (msg == null) {
-
         msg = "";
     }
 
@@ -210,34 +266,34 @@ function chrome_notify_error(errorMsg) {
     });
 }
 
-function chrome_notify_tickets(ticketID) {
+function chrome_notify_tickets(ticket) {
 
-    var notificationID = "notif_" + Math.random() + "-" + ticketID;
+    var notificationID = "notif_" + Math.random() + "-" + ticket.id;
     var subText;
     var iconImage
 
-    if (ticketPriorities[ticketID]) {
+    if (ticket.priority != null) {
 
-        subText = "#" + ticketID + " (" + ticketPriorities[ticketID] + ")";
+        subText = "#" + ticket.id + " (" + ticket.priority + ")";
 
-        if (ticketPriorities[ticketID] == 'urgent') {
+        if (ticket.priority == 'urgent') {
             iconImage = 'icons/airplane-red-48.png'
-        } else if (ticketPriorities[ticketID] == 'high') {
+        } else if (ticket.priority == 'high') {
             iconImage = 'icons/airplane-yellow-48.png'
         } else {
             iconImage = 'icons/airplane-graphite-48.png';
         }
     } else {
 
-        subText = "#" + ticketID;
+        subText = "#" + ticket.id;
         iconImage = 'icons/airplane-graphite-48.png';
     }
 
     var opt = {
         type: "basic",
-        title: "New Case",
-        message: '"' + ticketSubjects[ticketID] + '"',
-        contextMessage: subText,
+        title: ticket.subject,
+        message: ticket.description,
+        // contextMessage: subText,
         iconUrl: iconImage,
     };
 
@@ -259,31 +315,6 @@ function chrome_notify_multi(numTickets) {
     chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.info('notification ' + notificationID + ' created');
     });
-}
-
-function ticket_notif_click2(notificationID) {
-
-    if (notificationID.indexOf('notif') !== -1) {
-
-        var ticketID = notificationID.split('-')[1];
-        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/tickets/' + ticketID;
-        chrome.tabs.create({
-            url: newURL
-        });
-        return;
-
-    } else if (notificationID.indexOf('multi-tickets') !== -1) {
-
-        var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/#/filters/' + settings.viewID;
-        chrome.tabs.create({
-            url: newURL
-        });
-
-    } else {
-
-        return;
-    };
-
 }
 
 function ticket_notif_click(notificationID) {
@@ -308,8 +339,46 @@ function ticket_notif_click(notificationID) {
 
         return;
     };
-
 }
+
+function launch_zd_ticket(ticketID) {
+
+    console.log("launching ticket");
+
+    var tabQuery = {
+        url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
+        // active: false
+    }
+
+    function open_and_focus(tabs) {
+        
+        var ZDtab = tabs[0];
+
+        if (ZDtab) {
+            var hash = '#/tickets/' + ticketID;
+
+            chrome.tabs.executeScript(ZDtab.id, {
+                code: 'window.location.hash = "' + hash + '";'
+            });
+
+            chrome.tabs.update(ZDtab.id, {
+                active: true
+            });
+
+            chrome.windows.update(ZDtab.windowId, {
+                focused: true
+            })
+        } else {
+            console.log('no tab found');
+        };
+    };
+
+    chrome.tabs.query(tabQuery, open_and_focus);
+}
+
+
+
+
 
 function update_icon() {
 
@@ -328,7 +397,7 @@ function update_icon() {
 
 function badge_icon(custom_string) {
 
-    var number = ticketIDArrayCurrent.length;
+    var number = ticketsCurrent.length;
     var badgeColor = [150, 150, 150, 255];
     var badgeText = "";
 
@@ -361,8 +430,8 @@ function autoCheck() {
     // calls doRequest again if interval checking is enabled
     // clears timer before setting new one to ensure no duplicate timers
 
-    console.log("firing autocheck");
-    console.log("cleared timeout.");
+    console.log("autocheck invoked");
+
     clearTimeout(myTimer);
     
     if (settings.enabled == true) {
@@ -370,11 +439,12 @@ function autoCheck() {
         // var interval = settings.getInterval() * 60000;
         var interval = settings.getInterval() * 5000;
 
-        console.log("set new timeout.");
+        console.log("set new timeout");
         myTimer = setTimeout(doRequest, interval);
 
     }
 }
+
 
 chrome.storage.local.get(null, function(loaded) {
     if (loaded.ranBefore && loaded.setBefore) {
@@ -402,4 +472,5 @@ chrome.runtime.onConnect.addListener(function(port) {
 })
 
 // click notifications to go to tickets
-chrome.notifications.onClicked.addListener(ticket_notif_click);
+// chrome.notifications.onClicked.addListener(ticket_notif_click);
+chrome.notifications.onClicked.addListener(launch_zd_ticket);
