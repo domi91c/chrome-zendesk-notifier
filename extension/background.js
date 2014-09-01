@@ -48,6 +48,7 @@ var ticketIDArrayCurrent = [];
 var ticketIDArrayNew = [];
 var ticketSubjects = [];
 var ticketPriorities = [];
+var myTimer;
 
 function error_message(status) {
 
@@ -74,7 +75,7 @@ function error_message(status) {
 }
 
 function doRequest(callback) {
-
+    
     var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json'
 
     console.log('Performing request');
@@ -116,9 +117,10 @@ function doRequest(callback) {
     };
 };
 
+
 function doRequestInvoked() { // when "Check Now" is clicked
 
-    if (myTimer) {  // reset autocheck timer
+    if (myTimer) {  // reset timer
         console.log("invoked, timer cleared");
         clearTimeout(myTimer);
     }
@@ -327,29 +329,20 @@ function update_icon() {
 function badge_icon(custom_string) {
 
     var number = ticketIDArrayCurrent.length;
-    var color = {color: [150, 150, 150, 255]};
+    var badgeColor = {color: [150, 150, 150, 255]};
+    var badgeText = "";
 
     if (custom_string) {
-        color = {color: [255, 0, 0, 255]};
-        
-        chrome.browserAction.setBadgeText({
-            text: custom_string
-        });
+        badgeColor = {color: [255, 0, 0, 255]};
+        badgeText = custom_string;
 
     } else if (number > 0) {
-        color = {color: [0, 185, 242, 255]};
-
-        chrome.browserAction.setBadgeText({
-            text: number.toString()
-        });
-    } else {
-
-        chrome.browserAction.setBadgeText({
-            text: ''
-        });
+        badgeColor = {color: [0, 185, 242, 255]};
+        badgeText = number.toString()
     }
 
-    chrome.browserAction.setBadgeBackgroundColor(color);
+    chrome.browserAction.setBadgeBackgroundColor(badgeColor);
+    chrome.browserAction.setBadgeText({text: badgeText});
 
 }
 
@@ -358,15 +351,15 @@ function test_request() {
     console.log('interval: ' + settings.interval);
 }
 
-var myTimer;
-
 function autoCheck() {
 
+    // calls doRequest again if interval checking is enabled
+    // clears timer before setting new one to ensure no duplicate timers
+
     console.log("firing autocheck");
-
-// starts repeated checks if settings indicate true
-// clears timer if settings indicate false
-
+    console.log("cleared timeout.");
+    clearTimeout(myTimer);
+    
     if (settings.enabled == true) {
 
         // var interval = settings.getInterval() * 60000;
@@ -375,10 +368,6 @@ function autoCheck() {
         console.log("set new timeout.");
         myTimer = setTimeout(doRequest, interval);
 
-    } else {
-
-        console.log("cleared timeout.");
-        clearTimeout(myTimer);
     }
 }
 
