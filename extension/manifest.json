@@ -17,8 +17,9 @@
             "38": "icons/ZD-logo-38.png"
         },
         "default_title": "Ticket Checker",
-        "default_popup": "popup/popup.html"
+        "default_popup": "popup.html"
     },
+    "options_page": "options.html",
     "icons": {
         "128": "icons/ZD-logo-128.png"
     },
