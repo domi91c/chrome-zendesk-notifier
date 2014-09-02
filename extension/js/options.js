@@ -40,6 +40,8 @@ window.onload = function() {
             bg.update_icon();
             bg.badge_icon();
             bg.autoCheck();
+
+            bg.settings.save();
         },
     }
 
