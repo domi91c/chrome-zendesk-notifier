@@ -12,6 +12,11 @@ body {
     margin: 20px;
     width: 300px;
 }
+li#loading {
+    text-align: center;
+    font-size: 16px;
+    color: #bbbbbb;
+}
 .tickets-li {
     padding: 10px;
     padding-left: 64px;

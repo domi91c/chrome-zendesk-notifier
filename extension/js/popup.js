@@ -21,6 +21,9 @@ window.onload = function() {
         listItem[0].onclick = click_handler;
     }
 
+    function clear_loading() {
+
+    }
 
     function show_tickets(error) {
 
@@ -36,6 +39,7 @@ window.onload = function() {
             create_list_item("no_tickets", "Nothing in the queue!");
         }
 
+        // populate the list
         for (var i = 0; i < ticketsCurrent.length; i++) {
 
             var dateCreated = new Date(ticketsCurrent[i].created_at);
@@ -49,8 +53,12 @@ window.onload = function() {
                 ticketsCurrent[i].id,
                 ticketsCurrent[i].subject,
                 time_delta_str(time_since_created(dateCreated)),
-                highlight);
+                highlight
+            );
         };
+
+        $('#loading').remove();
+
     }
 
     function time_since_created(date) {
@@ -95,7 +103,7 @@ window.onload = function() {
 
     bg.doRequest(show_tickets, null, true); // silent refresh when popup opens
 
-    document.getElementById('checknow').onclick = function() {
-        bg.doRequestInvoked();
-    }
+    // document.getElementById('checknow').onclick = function() {
+    //     bg.doRequestInvoked();
+    // }
 }
