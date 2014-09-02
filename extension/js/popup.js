@@ -12,9 +12,12 @@ window.onload = function() {
     function create_list_item(id, content) {
 
         var list = $('.tickets');
-        var ticket = '<li id="' + id + '">' + content + '</li>';
+        var ticket = '<li id="' + id + '"' + 'class=tickets-li' +  '>' + content + '</li>';
 
         list.append(ticket);
+
+        var listItem = $('#' + id)[0];
+        listItem.onclick = click_handler;
     }
 
     function show_tickets(error) {
@@ -28,10 +31,11 @@ window.onload = function() {
         if (error) {
             create_list_item("error_msg", error);
         };
-    };
+    }
 
-    function add_click_handlers() {
-        
-    };
+    function click_handler(event) {
+        var ID = event.target.id;
+        bg.launch_zd_link(ID);
+    }
 
 }
