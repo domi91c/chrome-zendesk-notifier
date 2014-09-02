@@ -2,17 +2,23 @@ var bg = chrome.extension.getBackgroundPage();
 
 window.onload = function() {
 
-    function create_list_item(id, content, subtext) {
+    function create_list_item(id, content, subtext, highlight) {
 
         var list = $('.tickets');
         var ticket = '<li id="' + id + '"' + 'class=tickets-li' + '>' + content + '</li>';
         list.append(ticket);
 
         var listItem = $('#' + id);
-        listItem.prepend('<div class=info-created>' + subtext + '</div>');
+
+        if (!highlight) {
+            listItem.prepend('<div class="info-created">' + subtext + '</div>');
+        } else {
+            listItem.prepend('<div class="info-created highlight">' + subtext + '</div>');
+        };
 
         listItem[0].onclick = click_handler;
     }
+
 
     function show_tickets(error) {
 
@@ -27,8 +33,17 @@ window.onload = function() {
         for (var i = 0; i < ticketsCurrent.length; i++) {
 
             var dateCreated = new Date(ticketsCurrent[i].created_at);
+            var highlight = null;
 
-            create_list_item(ticketsCurrent[i].id, ticketsCurrent[i].subject, time_since_created(dateCreated));
+            if (time_since_created(dateCreated) > (60000 * 45)) {   // if more than 45 minutes have passed
+                highlight = true;
+            }
+
+            create_list_item(
+                ticketsCurrent[i].id,
+                ticketsCurrent[i].subject,
+                time_delta_str(time_since_created(dateCreated)),
+                highlight);
         };
     }
 
@@ -36,7 +51,13 @@ window.onload = function() {
 
         var timeString;
         var dateNow = new Date();
-        var delta = (dateNow - date);
+
+        return dateNow - date;
+    }
+
+    function time_delta_str(delta) {
+
+        var timeString;
         var deltaMin = Math.floor(delta / 60000);
         var deltaHour = Math.floor(deltaMin / 60);
         var remainMin = deltaMin / deltaHour % 60;
@@ -49,7 +70,8 @@ window.onload = function() {
             timeString = deltaMin + " min";
         };
 
-        console.log(deltaMin + " min");
+        // console.log(deltaMin + " min");
+
         return timeString;
     }
 

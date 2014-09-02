@@ -14,7 +14,7 @@ body {
 }
 .tickets-li {
     padding: 10px;
-    padding-left: 60px;
+    padding-left: 64px;
     margin-bottom: 7px;
     background-color: #f6f6f6;
     position: relative;
@@ -29,6 +29,8 @@ body {
     position: absolute;
     padding-left: 10px;
     left: 0px;
+}
+.info-created.highlight {
     color: red;
 }
 .topcoat-button--large, .topcoat-button--large--quiet {
