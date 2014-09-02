@@ -22,13 +22,14 @@ window.onload = function() {
     }
 
     function clear_loading() {
-
+        $('#loading').remove();
     }
 
     function show_tickets(error) {
 
         if (error) {
             create_list_item("error_msg", error);
+            clear_loading();
             return;
         };
 
@@ -57,8 +58,7 @@ window.onload = function() {
             );
         };
 
-        $('#loading').remove();
-
+        clear_loading();
     }
 
     function time_since_created(date) {
