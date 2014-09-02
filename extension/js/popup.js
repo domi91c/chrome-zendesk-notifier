@@ -22,6 +22,7 @@ window.onload = function() {
         };
 
         var ticketsCurrent = bg.ticketsCurrent
+        ticketsCurrent.sort(compare_time);
 
         for (var i = 0; i < ticketsCurrent.length; i++) {
 
@@ -50,6 +51,13 @@ window.onload = function() {
 
         console.log(deltaMin + " min");
         return timeString;
+    }
+
+    function compare_time(ticketA, ticketB) {
+        dateA = new Date(ticketA.created_at);
+        dateB = new Date(ticketB.created_at);
+
+        return dateA - dateB;
     }
 
     function click_handler(event) {
