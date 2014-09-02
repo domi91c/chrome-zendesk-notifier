@@ -10,10 +10,12 @@ window.onload = function() {
 
         var listItem = $('#' + id);
 
-        if (!highlight) {
+        if (subtext && !highlight) {
             listItem.prepend('<div class="info-created">' + subtext + '</div>');
-        } else {
+        } else if (subtext && highlight) {
             listItem.prepend('<div class="info-created highlight">' + subtext + '</div>');
+        } else {
+            return;
         };
 
         listItem[0].onclick = click_handler;
@@ -29,6 +31,10 @@ window.onload = function() {
 
         var ticketsCurrent = bg.ticketsCurrent
         ticketsCurrent.sort(compare_time);
+
+        if (ticketsCurrent.length == 0) {
+            create_list_item("no_tickets", "Nothing in the queue!");
+        }
 
         for (var i = 0; i < ticketsCurrent.length; i++) {
 
