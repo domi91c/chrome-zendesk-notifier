@@ -437,8 +437,8 @@ function autoCheck() {
     
     if (settings.enabled == true) {
 
-        // var interval = settings.getInterval() * 60000;
-        var interval = settings.getInterval() * 5000;
+        var interval = settings.getInterval() * 60000;
+        // var interval = settings.getInterval() * 5000;
 
         console.log("set new timeout");
         myTimer = setTimeout(doRequest, interval);
