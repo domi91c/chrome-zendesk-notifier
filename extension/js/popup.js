@@ -13,11 +13,12 @@ window.onload = function() {
 
         var list = $('.tickets');
         var ticket = '<li id="' + id + '"' + 'class=tickets-li' +  '>' + content + '</li>';
-
         list.append(ticket);
 
-        var listItem = $('#' + id)[0];
-        listItem.onclick = click_handler;
+        var listItem = $('#' + id);
+        listItem.prepend('<div class=info-created>12 min</div>');
+        
+        listItem[0].onclick = click_handler;
     }
 
     function show_tickets(error) {

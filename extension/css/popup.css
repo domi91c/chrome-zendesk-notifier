@@ -4,35 +4,42 @@ body {
     font-weight: lighter;
     font-size: 14px;
 }
-
 * {
     list-style: none;
     padding: 0;
 }
-
 .wrapper {
     margin: 20px;
-    width: 200px;
+    width: 300px;
 }
-
 .tickets-li {
-  padding: 10px;
-  margin-bottom: 7px;
-  background-color: #f6f6f6;
+    padding: 10px;
+    padding-left: 60px;
+    margin-bottom: 7px;
+    background-color: #f6f6f6;
+    position: relative;
 }
-
 .tickets-li:hover {
-  background-color: #c5e4ff;
+    background-color: #c5e4ff;
 }
-
-.topcoat-button--large,
-.topcoat-button--large--quiet {
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.688rem;
-  padding: 0 0.875rem;
+.info-created {
+    width: 60px;
+    height: 30px;
+    font-size: 12px;
+    position: absolute;
+    padding-left: 10px;
+    left: 0px;
+    color: red;
 }
-
+.topcoat-button--large, .topcoat-button--large--quiet {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.688rem;
+    padding: 0 0.875rem;
+}
 #checknow {
-    width: 200px;
+    width: 150px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
