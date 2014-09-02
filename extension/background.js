@@ -157,7 +157,7 @@ function doRequest(callback, invoked, silent) {
 
             } else {
 
-                if (settings.showErrors == true || invoked === true) {
+                if (settings.showErrors === true || invoked === true) {
                     chrome_notify_error(error_message(xml.status));
                 };
 
@@ -166,18 +166,13 @@ function doRequest(callback, invoked, silent) {
                 badge_icon("?");
 
                 if (callback) {
-                    callback("error");
+                    callback(error_message(xml.status));
                 };
             }
             autoCheck();
-
-
         };
     };
 }
-
-
-
 
 function doRequestInvoked() { // when "Check Now" is clicked
 

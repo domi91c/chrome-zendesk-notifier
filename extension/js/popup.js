@@ -26,8 +26,12 @@ window.onload = function() {
         };
 
         if (error) {
-            console.log("error!");
-        }
+            create_list_item("error_msg", error);
+        };
+    };
+
+    function add_click_handlers() {
+        
     };
 
 }
