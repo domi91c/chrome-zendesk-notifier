@@ -4,7 +4,7 @@
 function printObj(object) {
     return JSON.stringify(object, null, 4);
 };
-console.log = function(){};
+// console.log = function(){};
 // =================
 
 var settings = {
@@ -44,6 +44,7 @@ var settings = {
             'viewID': this.viewID,
             'showErrors': this.showErrors
         });
+        console.log("Settings saved");
     },
     clear: function() {
         chrome.storage.local.clear(function() {
@@ -119,8 +120,8 @@ function error_message(status) {
     return errorMsg.toString();
 }
 
-function doRequest(callback) {
-    
+function doRequest(callback, invoked, silent) {
+
     var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json'
 
     console.log('Performing request');
@@ -140,38 +141,44 @@ function doRequest(callback) {
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
 
-                if (ticketsNew.length == 0 && callback) {
-                    callback();
-                } else {
-                    notify_new_tickets();
-                }
+                if (ticketsNew.length == 0 && invoked === true) {
 
+                    chrome_notify('No new cases!', null);
+
+                } else if (!silent) {
+
+                    notify_new_tickets();
+                };
+
+                if (callback) {
+                    callback();
+                };
                 badge_icon();
 
             } else {
 
-                if (settings.showErrors == true || callback) {
+                if (settings.showErrors === true || invoked === true) {
                     chrome_notify_error(error_message(xml.status));
-                }
+                };
 
+                ticketsCurrent = [];
+                ticketsPrevious = [];
                 badge_icon("?");
 
+                if (callback) {
+                    callback(error_message(xml.status));
+                };
             }
             autoCheck();
-        }
+        };
     };
-};
-
+}
 
 function doRequestInvoked() { // when "Check Now" is clicked
 
     clearTimeout(myTimer);
-
     ticketsPrevious = []; // reset tickets
-
-    doRequest(function() {
-        chrome_notify('No new cases!', null);
-    });
+    doRequest(null, true);
 }
 
 function process_tickets(response) {
@@ -438,7 +445,6 @@ function autoCheck() {
 
     }
 }
-
 
 chrome.storage.local.get(null, function(loaded) {
     if (loaded.ranBefore && loaded.setBefore) {
