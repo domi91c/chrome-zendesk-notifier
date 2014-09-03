@@ -38,6 +38,9 @@ li#status {
     padding-left: 10px;
     text-align: center;
 }
+li#status:hover {
+    background-color: white;
+}
 .info-created {
     width: 60px;
     height: 30px;
