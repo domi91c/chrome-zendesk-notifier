@@ -3,6 +3,7 @@ body {
     font-family: "Source Sans", helvetica, arial, sans-serif;
     font-weight: lighter;
     font-size: 14px;
+    /*display: none;*/
 }
 * {
     list-style: none;
@@ -16,6 +17,10 @@ li#loading {
     text-align: center;
     font-size: 16px;
     color: #bbbbbb;
+/*    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    /*top: 0px;*/
 }
 .tickets-li {
     padding: 10px;

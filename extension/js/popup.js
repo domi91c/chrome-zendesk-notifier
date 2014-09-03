@@ -59,6 +59,7 @@ window.onload = function() {
         };
 
         clear_loading();
+        // $('body').show();
     }
 
     function time_since_created(date) {
@@ -103,7 +104,11 @@ window.onload = function() {
 
     bg.doRequest(show_tickets, null, true); // silent refresh when popup opens
 
-    // document.getElementById('checknow').onclick = function() {
-    //     bg.doRequestInvoked();
-    // }
+    $(function() {
+
+        
+
+        
+    });
+
 }
