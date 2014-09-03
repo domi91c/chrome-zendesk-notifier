@@ -37,6 +37,7 @@ li#loading {
 li#status {
     padding-left: 10px;
     text-align: center;
+    border-bottom: none;
 }
 li#status:hover {
     background-color: white;
