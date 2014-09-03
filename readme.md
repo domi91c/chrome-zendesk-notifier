@@ -1,8 +1,15 @@
-# Zendesk Chrome Extension
+# Zendesk Checker Chrome Extension
 
 Checks for new tickets in a given view and alerts the user via Chrome rich notifications.
 
-# Releases
+# Install
+Drag zendesk-checker-#.#.#.crx into chrome://extensions
+
+# Release Notes
+
+##v1.2.1
+* Popup now shows tickets instead of settings
+* Settings moved to Options page
 
 ##v1.1.1
 * Opens tickets and views in existing Zendesk tab
