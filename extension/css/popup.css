@@ -3,31 +3,33 @@ body {
     font-family: "Source Sans", helvetica, arial, sans-serif;
     font-weight: lighter;
     font-size: 14px;
-    /*display: none;*/
 }
 * {
     list-style: none;
     padding: 0;
 }
 .wrapper {
-    margin: 20px;
+    margin: 16px;
     width: 300px;
 }
 li#loading {
     text-align: center;
     font-size: 16px;
     color: #bbbbbb;
-/*    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    /*top: 0px;*/
+    /*color: red;*/
+    height: 20px;
+    margin-bottom: -20px;
 }
 .tickets-li {
     padding: 10px;
     padding-left: 64px;
-    margin-bottom: 7px;
-    background-color: #f6f6f6;
+    border-bottom: solid 1px #eeeeee;
     position: relative;
+    opacity: 0;
+    -webkit-transition: background-color .1s ease-out;
+    -moz-transition: background-color .1s ease-out;
+    -o-transition: background-color .1s ease-out;
+    transition: background-color .1s ease-out;
 }
 .tickets-li:hover {
     background-color: #c5e4ff;
@@ -36,7 +38,6 @@ li#status {
     padding-left: 10px;
     text-align: center;
 }
-
 .info-created {
     width: 60px;
     height: 30px;

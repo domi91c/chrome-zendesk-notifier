@@ -4,6 +4,8 @@ window.onload = function() {
 
     function create_list_item(id, content, subtext, highlight) {
 
+        var clickable = true;
+
         var list = $('.tickets');
         var ticket = '<li id="' + id + '"' + 'class=tickets-li' + '>' + content + '</li>';
         list.append(ticket);
@@ -15,14 +17,23 @@ window.onload = function() {
         } else if (subtext && highlight) {
             listItem.prepend('<div class="info-created highlight">' + subtext + '</div>');
         } else {
-            return;
+            clickable = false;
         };
 
-        listItem[0].onclick = click_handler;
+        if (clickable) {
+            listItem[0].onclick = click_handler;
+        };
+
+        listItem.fadeTo(200, 1);
     }
 
     function clear_loading() {
-        $('#loading').remove();
+
+        $('#loading').animate({
+            opacity: '0'
+        }, 250, function() {
+            $(this).remove();
+        });
     }
 
     function show_tickets(error) {
@@ -61,7 +72,6 @@ window.onload = function() {
         };
 
         clear_loading();
-        // $('body').show();
     }
 
     function time_since_created(date) {
@@ -105,12 +115,5 @@ window.onload = function() {
     }
 
     bg.doRequest(show_tickets, null, true); // silent refresh when popup opens
-
-    $(function() {
-
-        
-
-        
-    });
 
 }

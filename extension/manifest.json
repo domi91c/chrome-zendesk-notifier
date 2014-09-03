@@ -1,5 +1,5 @@
 {
-    "name": "Zendesk Case Checker",
+    "name": "Zendesk Checker",
     "description": "Checks for new Zendesk cases in a specified view",
     "version": "1.2.0",
     "background": {
