@@ -32,6 +32,11 @@ li#loading {
 .tickets-li:hover {
     background-color: #c5e4ff;
 }
+li#status {
+    padding-left: 10px;
+    text-align: center;
+}
+
 .info-created {
     width: 60px;
     height: 30px;

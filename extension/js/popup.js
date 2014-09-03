@@ -28,7 +28,7 @@ window.onload = function() {
     function show_tickets(error) {
 
         if (error) {
-            create_list_item("error_msg", error);
+            create_list_item("status", error);
             clear_loading();
             return;
         };
@@ -37,7 +37,9 @@ window.onload = function() {
         ticketsCurrent.sort(compare_time);
 
         if (ticketsCurrent.length == 0) {
-            create_list_item("no_tickets", "Nothing in the queue!");
+            create_list_item("status", "Nothing in the queue!");
+            clear_loading();
+            return;
         }
 
         // populate the list
