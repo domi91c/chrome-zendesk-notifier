@@ -53,9 +53,6 @@
 * ~~extension icon shows feedback (gray, on/off state)~~
 
 ### V1.1.2
-* make badge icon auto-update at 1 min intervals regardless of rich notification on/off settings
-	* exponential backoff on failure
-	* show red "?" on failure
 * remove interval setting, only leave notification toggle switch.
 * [maybe] remove option to show errors. Only show errors during check now, and use the "?" badge icon to indicate errors otherwise
 * **Include notification of tickets that are about to expire**
@@ -65,7 +62,10 @@
 	* move options to separate page
 * push notifications so tickets
 * make tickets appear one at a time, instead of all at once (blocking screen)
-* 
+* make badge icon auto-update at 1 min intervals regardless of rich notification on/off settings
+	* **exponential backoff on failure**
+	* stop showing error chrome notifications after first error
+	* show red "?" on failure
 
 
 # Resources
