@@ -66,6 +66,9 @@
 	* **exponential backoff on failure**
 	* stop showing error chrome notifications after first error
 	* show red "?" on failure
+* multi-view support
+	* different notifications for each view?
+	* icon popup should show organized list of tickets in each view
 
 
 # Resources
