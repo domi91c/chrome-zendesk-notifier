@@ -27,6 +27,11 @@
 * alternate method: **incremental tickets API** (admins only)
 	* Get tickets that changed "since last asked"
 	* http://developer.zendesk.com/documentation/rest_api/ticket_export.html
+	
+# Bugs
+## UI
+* popup shows lines at bottom of each entry, even if only one entry
+	* try css `nth-of-child`
 
 # Features to implement
 * ~~if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.~~
