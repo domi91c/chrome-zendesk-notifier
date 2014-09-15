@@ -30,8 +30,8 @@
 	
 # Bugs
 ## UI
-* popup shows lines at bottom of each entry, even if only one entry
-	* try css `nth-of-child`
+* 
+
 
 # Features to implement
 * ~~if number of notification exceeds N, display a notification saying "N new tickets" instead of pushing all N on screen separately.~~

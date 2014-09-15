@@ -31,6 +31,9 @@ li#loading {
     -o-transition: background-color .1s ease-out;
     transition: background-color .1s ease-out;
 }
+.tickets-li:last-child {
+    border-bottom: none;
+}
 .tickets-li:hover {
     background-color: #c5e4ff;
 }
