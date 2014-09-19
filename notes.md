@@ -65,8 +65,10 @@
 ### V2.x
 * new ticket view page, accessed by clicking app icon
 	* move options to separate page
-* push notifications so tickets
 * make tickets appear one at a time, instead of all at once (blocking screen)
+	* or, batch them (N new cases)
+* add quick on/off to enable/disable notifications
+	* this should not affect refresh interval; refresh should always be on
 * make badge icon auto-update at 1 min intervals regardless of rich notification on/off settings
 	* **exponential backoff on failure**
 	* stop showing error chrome notifications after first error
