@@ -29,8 +29,10 @@
 	* http://developer.zendesk.com/documentation/rest_api/ticket_export.html
 	
 # Bugs
-## UI
-* 
+
+### Outdated notifications showing
+* Hypothesis: when extension fails to get response, something resets new_tickets array. Therefore, the next time an update is requested, these notifications will show again
+	* to confirm this hypothesis, log all array changes
 
 
 # Features to implement
@@ -40,6 +42,7 @@
 * ~~option to open in new tab or current zendesk window/tab~~
 	* ~~to open in current zendesk tab: `window.location.hash = "#/tickets/4"`~~
 * "check now" button should have option to show any tickets in view, or just new tickets from last check
+* **option to make notifications "stick" on screen**
 * dequeue requests so that error message don't pile up when unable to connect (or computer goes to sleep)
 * Triage mode
 	* checks for unassigned tickets in a specific view
