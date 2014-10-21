@@ -339,12 +339,12 @@ function ticket_notif_click(notificationID) {
 
 function launch_zd_link(objectID, isView) {
 
-    var objectURL;
+    var property;
 
     if (isView) {
-        objectURL = '#/filters/';
+        property = 'ticket.index';
     } else {
-        objectURL = '#/tickets/'; 
+        property = 'show_filter'; 
     }
 
     var tabQuery = {
@@ -358,10 +358,12 @@ function launch_zd_link(objectID, isView) {
 
         if (ZDtab) {
 
-            var hash = objectURL + objectID;
+            var js = 'window.Zendesk.router.transitionTo("' + property + '",' + objectID + ')'  // will not work due to context security policy :(
+
+            console.log(js);
 
             chrome.tabs.executeScript(ZDtab.id, {
-                code: 'window.location.hash = "' + hash + '";'
+                code: js
             });
             chrome.tabs.update(ZDtab.id, {
                 active: true
