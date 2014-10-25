@@ -15,13 +15,13 @@ window.onload = function() {
     controller = {
 
         load: function() {
-            checkboxInterval.checked = bg.settings.enabled;
+            checkboxInterval.checked = bg.settings.showNotifications;
             inputInterval.value = bg.settings.interval;
             inputDomain.value = bg.settings.zendeskDomain;
             inputViewID.value = bg.settings.viewID;
             checkboxShowErrors.checked = bg.settings.showErrors;
 
-            if (bg.settings.enabled == false) {
+            if (bg.settings.showNotifications === false) {
                 inputInterval.disabled = true;
             } else {
                 inputInterval.disabled = false;
@@ -30,7 +30,7 @@ window.onload = function() {
         update: function() {
             // get new values from form and push to settings
             enable_transition();
-            bg.settings.enabled = checkboxInterval.checked;
+            bg.settings.showNotifications = checkboxInterval.checked;
             bg.settings.interval = parse_interval(inputInterval.value);
             bg.settings.zendeskDomain = inputDomain.value;
             bg.settings.viewID = parse_viewID(inputViewID.value);
@@ -43,7 +43,7 @@ window.onload = function() {
 
             bg.settings.save();
         },
-    }
+    };
 
     function enable_transition() {
 
@@ -77,19 +77,21 @@ window.onload = function() {
         'input-interval',
         'input-domain',
         'input-viewid',
-    ]
+    ];
 
     var checkboxes = [
         'checkbox-interval',
         'checkbox-showerror'
-    ]
+    ];
 
-    for (var i = 0; i < forms.length; i++) {
+    var i;
+
+    for (i = 0; i < forms.length; i++) {
         document.getElementById(forms[i]).oninput = function() {
             controller.update();
         };
     }
-    for (var i = 0; i < checkboxes.length; i++) {
+    for (i = 0; i < checkboxes.length; i++) {
         document.getElementById(checkboxes[i]).onchange = function() {
             controller.update();
         };
@@ -99,4 +101,4 @@ window.onload = function() {
         bg.doRequestInvoked();
     };
 
-}
+};

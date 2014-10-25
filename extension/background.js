@@ -8,7 +8,8 @@ function printObj(object) {
 // =================
 
 var settings = {
-    enabled: false,
+    enabled: true,
+    showNotifications: true,
     interval: 1,
     zendeskDomain: 'zendesk-domain',
     viewID: 12345678,
@@ -18,6 +19,7 @@ var settings = {
         var that = this;
         chrome.storage.local.get(null, function(loaded) {
             that.enabled = loaded.enabled;
+            that.showNotifications = loaded.showNotifications;
             that.interval = loaded.interval;
             that.zendeskDomain = loaded.zendeskDomain;
             that.viewID = loaded.viewID;
@@ -39,6 +41,7 @@ var settings = {
     save: function() {
         chrome.storage.local.set({
             'enabled': this.enabled,
+            'showNotifications': this.showNotifications,
             'interval': this.interval,
             'zendeskDomain': this.zendeskDomain,
             'viewID': this.viewID,
@@ -469,8 +472,7 @@ function autoCheck() {
     
     if (settings.enabled === true) {
 
-        var interval = settings.getInterval() * 60000;
-        // var interval = settings.getInterval() * 5000;
+        var interval = settings.getInterval() * 5000;
 
         console.log("set new timeout");
         myTimer = setTimeout(doRequest, interval);
