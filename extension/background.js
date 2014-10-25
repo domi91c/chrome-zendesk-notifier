@@ -477,8 +477,8 @@ function autoCheck() {
     if (settings.enabled === true) {
 
         // var interval = settings.getInterval() * 60000;
-        
-        myTimer = setTimeout(doRequest, 5000);
+
+        myTimer = setTimeout(doRequest, 3000);
 
     }
 }
