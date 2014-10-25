@@ -144,9 +144,13 @@ function doRequest(callback, invoked, silent) {
             if (xml.status === 200) {
 
                 process_tickets(JSON.parse(xml.responseText));
-                compare_tickets(execute_ticket_actions, callback, invoked, silent);  // Bug: this function does not complete before the next one runs!
 
-                // execute_ticket_actions(callback, invoked);
+                if (invoked === true) {
+                    ticketsPrevious = []; // reset tickets if manual check invoked
+                }
+
+                compare_tickets();
+                execute_ticket_actions(callback, invoked, silent);
 
             } else {
 
@@ -170,7 +174,6 @@ function doRequest(callback, invoked, silent) {
 function doRequestInvoked() { // when "Check Now" is clicked
 
     clearTimeout(myTimer);
-    ticketsPrevious = []; // reset tickets
     doRequest(null, true);
 }
 
@@ -183,10 +186,13 @@ function process_tickets(response) {
     for (var i = 0; i < tickets.length; i++) {
         ticketsCurrent.push(tickets[i]);
     }
-
 }
 
-function compare_tickets(callback) {
+function compare_tickets() {
+
+    console.log('compare_tickets before: ticketsPrevious ' + ticketsPrevious.length);
+    console.log('compare_tickets before: ticketsCurrent ' + ticketsCurrent.length);
+    console.log('compare_tickets before: ticketsNew ' + ticketsNew.length);
 
     ticketsNew = [];
 
@@ -204,13 +210,9 @@ function compare_tickets(callback) {
     // 3. replace ticketsPrevious tickets with ticketsCurrent
     ticketsPrevious = ticketsCurrent.slice(0);
 
-    // 4. call the next function
-
-    if (callback) {
-        console.log('Running callback');
-        console.log('ticketsNew length: ' + ticketsNew.length);
-        callback(arguments[1], arguments[2], arguments[3]);
-    }
+    console.log('compare_tickets after: ticketsPrevious ' + ticketsPrevious.length);
+    console.log('compare_tickets after: ticketsCurrent ' + ticketsCurrent.length);
+    console.log('compare_tickets after: ticketsNew ' + ticketsNew.length);
 }
 
 function execute_ticket_actions(callback, invoked, silent) {
@@ -219,11 +221,9 @@ function execute_ticket_actions(callback, invoked, silent) {
     console.log('silent: ' + silent);
 
     if (ticketsNew.length === 0 && invoked === true) {
-
         chrome_notify('No new cases!', null);
 
     } else if ((settings.showNotifications === true && !silent) || invoked === true) {
-
         notify_new_tickets();
     }
 
