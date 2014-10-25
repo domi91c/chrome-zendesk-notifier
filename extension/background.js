@@ -8,7 +8,8 @@ function printObj(object) {
 // =================
 
 var settings = {
-    enabled: false,
+    enabled: true,
+    showNotifications: true,
     interval: 1,
     zendeskDomain: 'zendesk-domain',
     viewID: 12345678,
@@ -18,6 +19,7 @@ var settings = {
         var that = this;
         chrome.storage.local.get(null, function(loaded) {
             that.enabled = loaded.enabled;
+            that.showNotifications = loaded.showNotifications;
             that.interval = loaded.interval;
             that.zendeskDomain = loaded.zendeskDomain;
             that.viewID = loaded.viewID;
@@ -39,6 +41,7 @@ var settings = {
     save: function() {
         chrome.storage.local.set({
             'enabled': this.enabled,
+            'showNotifications': this.showNotifications,
             'interval': this.interval,
             'zendeskDomain': this.zendeskDomain,
             'viewID': this.viewID,
@@ -56,43 +59,43 @@ var settings = {
 var ticketsCurrent = [];
 var ticketsPrevious = [];
 var ticketsNew = [];
-var ticketsExample = [{
-            "url": "https://wdc7.zendesk.com/api/v2/tickets/3.json",
-            "id": 3,
-            "external_id": null,
-            "via": {
-                "channel": "web",
-                "source": {
-                    "from": {},
-                    "to": {},
-                    "rel": null
-                }
-            },
-            "created_at": "2014-09-01T04:42:13Z",
-            "updated_at": "2014-09-01T04:42:13Z",
-            "type": null,
-            "subject": "Baboom this is a new ticket",
-            "raw_subject": "Baboom this is a new ticket",
-            "description": "hey there sweetheart!",
-            "priority": null,
-            "status": "open",
-            "recipient": null,
-            "requester_id": 364410045,
-            "submitter_id": 364410045,
-            "assignee_id": 364410045,
-            "organization_id": 27307765,
-            "group_id": 21951885,
-            "collaborator_ids": [],
-            "forum_topic_id": null,
-            "problem_id": null,
-            "has_incidents": false,
-            "due_at": null,
-            "tags": [],
-            "custom_fields": [],
-            "satisfaction_rating": null,
-            "sharing_agreement_ids": [],
-            "fields": []
-        }];
+// var ticketsExample = [{
+//             "url": "https://wdc7.zendesk.com/api/v2/tickets/3.json",
+//             "id": 3,
+//             "external_id": null,
+//             "via": {
+//                 "channel": "web",
+//                 "source": {
+//                     "from": {},
+//                     "to": {},
+//                     "rel": null
+//                 }
+//             },
+//             "created_at": "2014-09-01T04:42:13Z",
+//             "updated_at": "2014-09-01T04:42:13Z",
+//             "type": null,
+//             "subject": "Baboom this is a new ticket",
+//             "raw_subject": "Baboom this is a new ticket",
+//             "description": "hey there sweetheart!",
+//             "priority": null,
+//             "status": "open",
+//             "recipient": null,
+//             "requester_id": 364410045,
+//             "submitter_id": 364410045,
+//             "assignee_id": 364410045,
+//             "organization_id": 27307765,
+//             "group_id": 21951885,
+//             "collaborator_ids": [],
+//             "forum_topic_id": null,
+//             "problem_id": null,
+//             "has_incidents": false,
+//             "due_at": null,
+//             "tags": [],
+//             "custom_fields": [],
+//             "satisfaction_rating": null,
+//             "sharing_agreement_ids": [],
+//             "fields": []
+//         }];
 
 var myTimer;
 
@@ -121,6 +124,8 @@ function error_message(status) {
 }
 
 function doRequest(callback, invoked, silent) {
+    // invoked is used for manual "check now"
+    // silent is used to force no notifications (e.g. popup loading new tickets)
 
     var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json';
 
@@ -139,21 +144,13 @@ function doRequest(callback, invoked, silent) {
             if (xml.status === 200) {
 
                 process_tickets(JSON.parse(xml.responseText));
+
+                if (invoked === true) {
+                    ticketsPrevious = []; // reset tickets if manual check invoked
+                }
+
                 compare_tickets();
-
-                if (ticketsNew.length === 0 && invoked === true) {
-
-                    chrome_notify('No new cases!', null);
-
-                } else if (!silent) {
-
-                    notify_new_tickets();
-                }
-
-                if (callback) {
-                    callback();
-                }
-                badge_icon();
+                execute_ticket_actions(callback, invoked, silent);
 
             } else {
 
@@ -177,7 +174,6 @@ function doRequest(callback, invoked, silent) {
 function doRequestInvoked() { // when "Check Now" is clicked
 
     clearTimeout(myTimer);
-    ticketsPrevious = []; // reset tickets
     doRequest(null, true);
 }
 
@@ -190,7 +186,6 @@ function process_tickets(response) {
     for (var i = 0; i < tickets.length; i++) {
         ticketsCurrent.push(tickets[i]);
     }
-
 }
 
 function compare_tickets() {
@@ -199,6 +194,7 @@ function compare_tickets() {
 
     // 1. find all the current tickets that are not in ticketsPrevious
     for (var i = 0; i < ticketsCurrent.length; i++) {
+
         if (!ticket_in_array(ticketsCurrent[i], ticketsPrevious)) {
 
             // 2. push these tickets into ticketsNew
@@ -209,6 +205,25 @@ function compare_tickets() {
 
     // 3. replace ticketsPrevious tickets with ticketsCurrent
     ticketsPrevious = ticketsCurrent.slice(0);
+}
+
+function execute_ticket_actions(callback, invoked, silent) {
+
+    // console.log('invoked: ' + invoked);
+    // console.log('silent: ' + silent);
+
+    if (ticketsNew.length === 0 && invoked === true) {
+        chrome_notify('No new cases!', null);
+
+    } else if ((settings.showNotifications === true && !silent) || invoked === true) {
+        notify_new_tickets();
+    }
+
+    if (callback) {
+        callback();
+    }
+
+    badge_icon();
 }
 
 function ticket_in_array(ticket, array) {
@@ -314,7 +329,7 @@ function chrome_notify_multi(newTickets) {
         var ticket = newTickets[i];
         // console.log(ticket);
 
-        if (ticket.priority !== null) {  // stop the loop after identifying urgent or high ticket
+        if (ticket.priority !== null) {  // stop the loop after identifying urgent ticket
 
             subText = "#" + ticket.id + " (" + ticket.priority + ")";
 
@@ -324,7 +339,6 @@ function chrome_notify_multi(newTickets) {
 
             } else if (ticket.priority == 'high') {
                 iconImage = 'icons/airplane-yellow-48.png';
-                break;
             }
         }
     }
@@ -415,7 +429,7 @@ function launch_zd_link(objectID, isView) {
 
 function update_icon() {
 
-    if (settings.enabled === true) {
+    if (settings.showNotifications === true) {
 
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-19.png'
@@ -453,27 +467,18 @@ function badge_icon(custom_string) {
 
 }
 
-function test_request() {
-
-    console.log('interval: ' + settings.interval);
-}
-
 function autoCheck() {
 
     // calls doRequest again if interval checking is enabled
     // clears timer before setting new one to ensure no duplicate timers
 
-    console.log("autocheck invoked");
-
     clearTimeout(myTimer);
     
     if (settings.enabled === true) {
 
-        var interval = settings.getInterval() * 60000;
-        // var interval = settings.getInterval() * 5000;
+        // var interval = settings.getInterval() * 60000;
 
-        console.log("set new timeout");
-        myTimer = setTimeout(doRequest, interval);
+        myTimer = setTimeout(doRequest, 3000);
 
     }
 }

@@ -16,6 +16,12 @@ div.option-line {
     line-height: 30px;
 }
 
+div.option-line-checkbox {
+    margin: 10px 0;
+    height: 28px;
+    line-height: 30px;
+}
+
 .topcoat-button--large,
 .topcoat-button--large--quiet {
   font-size: 0.875rem;
@@ -60,4 +66,5 @@ label.topcoat-switch {
 
 #checknow {
     width: 200px;
+    margin-top: 6px;
 }

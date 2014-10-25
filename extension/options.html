@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Zendesk Checker Options</title>
     <script src="js/options.js"></script>
     <link rel="stylesheet" type="text/css" href="css/topcoat-desktop-light.css">
-    <link rel="stylesheet" type="text/css" href="css/options.css"></head>
+    <link rel="stylesheet" type="text/css" href="css/options.css">
+</head>
+
 <body>
     <div class="wrapper">
         <div class="option-line">
-            Interval
-            <label class="interval-label">
-            <input type="text" class="topcoat-text-input--large" id="input-interval" value="" placeholder="1" tabindex="-1">
-            min</label>
+            Domain
+            <input type="text" class="topcoat-text-input--large" id="input-domain" value="" placeholder="my-zendesk">
+        </div>
+        <div class="option-line">
+            View ID
+            <input type="text" class="topcoat-text-input--large" id="input-viewid" value="" placeholder="12345678">
+        </div>
+        <div class="option-line-checkbox">
+            Instant notifications
             <label class="topcoat-switch">
                 <input type="checkbox" class="topcoat-switch__input" id="checkbox-interval">
                 <div class="topcoat-switch__toggle" id="interval-switch"></div>
             </label>
         </div>
-        <div class="option-line">
-            Domain
-            <input type="text" class="topcoat-text-input--large" id="input-domain" value="" placeholder="my-zendesk"></div>
-        <div class="option-line">
-            View ID
-            <input type="text" class="topcoat-text-input--large" id="input-viewid" value="" placeholder="12345678"></div>
-        <div class="option-line">
+<!--         <div class="option-line-checkbox">
+            Sticky notifications
+            <label class="topcoat-checkbox">
+                <input type="checkbox" id="checkbox-sticky">
+                <div class="topcoat-checkbox__checkmark"></div>
+            </label>
+        </div> -->
+        <div class="option-line-checkbox">
             Show error notifications
             <label class="topcoat-checkbox">
                 <input type="checkbox" id="checkbox-showerror">
@@ -34,4 +43,5 @@
 
     </div>
 </body>
+
 </html>
