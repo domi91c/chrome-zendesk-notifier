@@ -190,15 +190,11 @@ function process_tickets(response) {
 
 function compare_tickets() {
 
-    console.log('compare_tickets before: ticketsPrevious ' + ticketsPrevious.length);
-    console.log('compare_tickets before: ticketsCurrent ' + ticketsCurrent.length);
-    console.log('compare_tickets before: ticketsNew ' + ticketsNew.length);
-
     ticketsNew = [];
 
     // 1. find all the current tickets that are not in ticketsPrevious
     for (var i = 0; i < ticketsCurrent.length; i++) {
-        console.log('For loop iteration ' + i);
+
         if (!ticket_in_array(ticketsCurrent[i], ticketsPrevious)) {
 
             // 2. push these tickets into ticketsNew
@@ -209,16 +205,12 @@ function compare_tickets() {
 
     // 3. replace ticketsPrevious tickets with ticketsCurrent
     ticketsPrevious = ticketsCurrent.slice(0);
-
-    console.log('compare_tickets after: ticketsPrevious ' + ticketsPrevious.length);
-    console.log('compare_tickets after: ticketsCurrent ' + ticketsCurrent.length);
-    console.log('compare_tickets after: ticketsNew ' + ticketsNew.length);
 }
 
 function execute_ticket_actions(callback, invoked, silent) {
 
-    console.log('invoked: ' + invoked);
-    console.log('silent: ' + silent);
+    // console.log('invoked: ' + invoked);
+    // console.log('silent: ' + silent);
 
     if (ticketsNew.length === 0 && invoked === true) {
         chrome_notify('No new cases!', null);
