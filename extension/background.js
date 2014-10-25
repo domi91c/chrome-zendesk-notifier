@@ -3,7 +3,7 @@
 
 function printObj(object) {
     return JSON.stringify(object, null, 4);
-};
+}
 // console.log = function(){};
 // =================
 
@@ -49,9 +49,9 @@ var settings = {
     clear: function() {
         chrome.storage.local.clear(function() {
             console.log('settings cleared');
-        })
+        });
     }
-}
+};
 
 var ticketsCurrent = [];
 var ticketsPrevious = [];
@@ -122,7 +122,7 @@ function error_message(status) {
 
 function doRequest(callback, invoked, silent) {
 
-    var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json'
+    var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json';
 
     console.log('Performing request');
     var xml = new XMLHttpRequest();
@@ -141,25 +141,25 @@ function doRequest(callback, invoked, silent) {
                 process_tickets(JSON.parse(xml.responseText));
                 compare_tickets();
 
-                if (ticketsNew.length == 0 && invoked === true) {
+                if (ticketsNew.length === 0 && invoked === true) {
 
                     chrome_notify('No new cases!', null);
 
                 } else if (!silent) {
 
                     notify_new_tickets();
-                };
+                }
 
                 if (callback) {
                     callback();
-                };
+                }
                 badge_icon();
 
             } else {
 
                 if (settings.showErrors === true || invoked === true) {
                     chrome_notify_error(error_message(xml.status));
-                };
+                }
 
                 ticketsCurrent = [];
                 ticketsPrevious = [];
@@ -167,10 +167,10 @@ function doRequest(callback, invoked, silent) {
 
                 if (callback) {
                     callback(error_message(xml.status));
-                };
+                }
             }
             autoCheck();
-        };
+        }
     };
 }
 
@@ -189,9 +189,9 @@ function process_tickets(response) {
 
     for (var i = 0; i < tickets.length; i++) {
         ticketsCurrent.push(tickets[i]);
-    };
+    }
 
-};
+}
 
 function compare_tickets() {
 
@@ -218,8 +218,8 @@ function ticket_in_array(ticket, array) {
     for (var i = 0; i < array.length; i++) {
         if (ticket.id === array[i].id) {
             return true;
-        };
-    };
+        }
+    }
     return false;
 }
 
@@ -232,12 +232,12 @@ function notify_new_tickets() {
 
     for (var i = 0; i < ticketsNew.length; i++) {
         chrome_notify_tickets(ticketsNew[i]);
-    };
+    }
 }
 
 function chrome_notify(title, msg) {
 
-    if (msg == null) {
+    if (msg === null) {
         msg = "";
     }
 
@@ -273,16 +273,16 @@ function chrome_notify_tickets(ticket) {
 
     var notificationID = "notif_" + Math.random() + "-" + ticket.id;
     var subText;
-    var iconImage
+    var iconImage;
 
-    if (ticket.priority != null) {
+    if (ticket.priority !== null) {
 
         subText = "#" + ticket.id + " (" + ticket.priority + ")";
 
         if (ticket.priority == 'urgent') {
-            iconImage = 'icons/airplane-red-48.png'
+            iconImage = 'icons/airplane-red-48.png';
         } else if (ticket.priority == 'high') {
-            iconImage = 'icons/airplane-yellow-48.png'
+            iconImage = 'icons/airplane-yellow-48.png';
         } else {
             iconImage = 'icons/airplane-graphite-48.png';
         }
@@ -334,7 +334,7 @@ function ticket_notif_click(notificationID) {
     } else {
 
         return;
-    };
+    }
 }
 
 function launch_zd_link(objectID, isView) {
@@ -350,7 +350,7 @@ function launch_zd_link(objectID, isView) {
     var tabQuery = {
         url: '*://' + settings.zendeskDomain + '.zendesk.com/agent/*',
         // active: false
-    }
+    };
 
     function open_and_focus(tabs) {
 
@@ -358,7 +358,7 @@ function launch_zd_link(objectID, isView) {
 
         if (ZDtab) {
 
-            var js = 'window.Zendesk.router.transitionTo("' + property + '",' + objectID + ')'  // will not work due to context security policy :(
+            var js = 'window.Zendesk.router.transitionTo("' + property + '",' + objectID + ')';  // will not work due to context security policy :(
 
             console.log(js);
 
@@ -370,22 +370,22 @@ function launch_zd_link(objectID, isView) {
             });
             chrome.windows.update(ZDtab.windowId, {
                 focused: true
-            })
+            });
         } else {
 
             var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/' + objectURL + objectID;
             chrome.tabs.create({
                 url: newURL
             });
-        };
-    };
+        }
+    }
 
     chrome.tabs.query(tabQuery, open_and_focus);
 }
 
 function update_icon() {
 
-    if (settings.enabled == true) {
+    if (settings.enabled === true) {
 
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-19.png'
@@ -410,12 +410,12 @@ function badge_icon(custom_string) {
 
     } else if (number > 0) {
 
-        if (settings.enabled == true) {
+        if (settings.enabled === true) {
             badgeColor = [0, 185, 242, 255];    
         } else {
             badgeColor = [150, 150, 150, 255];    
         }
-        badgeText = number.toString()
+        badgeText = number.toString();
     }
 
     chrome.browserAction.setBadgeBackgroundColor({color: badgeColor});
@@ -437,7 +437,7 @@ function autoCheck() {
 
     clearTimeout(myTimer);
     
-    if (settings.enabled == true) {
+    if (settings.enabled === true) {
 
         var interval = settings.getInterval() * 60000;
         // var interval = settings.getInterval() * 5000;
@@ -455,7 +455,7 @@ chrome.storage.local.get(null, function(loaded) {
         return;
     }
     console.log('first run');
-})
+});
 
 chrome.storage.local.set({
     'ranBefore': true
@@ -470,8 +470,8 @@ chrome.runtime.onConnect.addListener(function(port) {
         chrome.storage.local.set({
             'setBefore': true
         });
-    })
-})
+    });
+});
 
 // click notifications to go to tickets
 chrome.notifications.onClicked.addListener(ticket_notif_click);
