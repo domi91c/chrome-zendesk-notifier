@@ -225,8 +225,8 @@ function ticket_in_array(ticket, array) {
 
 function notify_new_tickets() {
 
-    if (ticketsNew.length > 3) {
-        chrome_notify_multi(ticketsNew.length);
+    if (ticketsNew.length > 1) {
+        chrome_notify_multi(ticketsNew);
         return;
     }
 
@@ -305,20 +305,43 @@ function chrome_notify_tickets(ticket) {
     });
 }
 
-function chrome_notify_multi(numTickets) {
+function chrome_notify_multi(newTickets) {
+
+    var iconImage = 'icons/airplane-graphite-48.png';
+
+    for (var i = 0; i < newTickets.length; i++) {
+
+        var ticket = newTickets[i];
+        // console.log(ticket);
+
+        if (ticket.priority !== null) {  // stop the loop after identifying urgent or high ticket
+
+            subText = "#" + ticket.id + " (" + ticket.priority + ")";
+
+            if (ticket.priority == 'urgent') {
+                iconImage = 'icons/airplane-red-48.png';
+                break;
+
+            } else if (ticket.priority == 'high') {
+                iconImage = 'icons/airplane-yellow-48.png';
+                break;
+            }
+        }
+    }
 
     var notificationID = "multi-tickets-" + Math.random();
     var opt = {
         type: "basic",
-        title: numTickets + " new cases",
+        title: newTickets.length + " new cases",
         message: "Click me to go see them!",
-        iconUrl: "icons/airplane-graphite-48.png",
+        iconUrl: iconImage,
     };
 
     chrome.notifications.create(notificationID, opt, function(notificationID) {
         console.log('notification ' + notificationID + ' created');
     });
 }
+
 
 function ticket_notif_click(notificationID) {
 
