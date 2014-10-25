@@ -142,21 +142,9 @@ function doRequest(callback, invoked) {
             if (xml.status === 200) {
 
                 process_tickets(JSON.parse(xml.responseText));
-                compare_tickets();
+                compare_tickets();  // Bug: this function does not complete before the next one runs!
 
-                if (ticketsNew.length === 0 && invoked === true) {
-
-                    chrome_notify('No new cases!', null);
-
-                } else if (settings.showNotifications === true || invoked === true) {
-
-                    notify_new_tickets();
-                }
-
-                if (callback) {
-                    callback();
-                }
-                badge_icon();
+                execute_ticket_actions(callback, invoked);
 
             } else {
 
@@ -213,6 +201,25 @@ function compare_tickets() {
     // 3. replace ticketsPrevious tickets with ticketsCurrent
     ticketsPrevious = ticketsCurrent.slice(0);
 }
+
+function execute_ticket_actions(callback, invoked) {
+
+    if (ticketsNew.length === 0 && invoked === true) {
+
+        chrome_notify('No new cases!', null);
+
+    } else if (settings.showNotifications === true || invoked === true) {
+
+        notify_new_tickets();
+    }
+
+    if (callback) {
+        callback();
+    }
+
+    badge_icon();
+}
+
 
 function ticket_in_array(ticket, array) {
     // returns whether a ticket object exists in a given array of ticket objects
@@ -418,7 +425,7 @@ function launch_zd_link(objectID, isView) {
 
 function update_icon() {
 
-    if (settings.enabled === true) {
+    if (settings.showNotifications === true) {
 
         chrome.browserAction.setIcon({
             path: 'icons/ZD-logo-19.png'
@@ -466,7 +473,7 @@ function autoCheck() {
     // calls doRequest again if interval checking is enabled
     // clears timer before setting new one to ensure no duplicate timers
 
-    console.log("autocheck invoked");
+    // console.log("autocheck invoked");
 
     clearTimeout(myTimer);
     
