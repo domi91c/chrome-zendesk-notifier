@@ -324,7 +324,7 @@ function chrome_notify_multi(newTickets) {
         var ticket = newTickets[i];
         // console.log(ticket);
 
-        if (ticket.priority !== null) {  // stop the loop after identifying urgent or high ticket
+        if (ticket.priority !== null) {  // stop the loop after identifying urgent ticket
 
             subText = "#" + ticket.id + " (" + ticket.priority + ")";
 
@@ -334,7 +334,6 @@ function chrome_notify_multi(newTickets) {
 
             } else if (ticket.priority == 'high') {
                 iconImage = 'icons/airplane-yellow-48.png';
-                break;
             }
         }
     }
