@@ -123,7 +123,7 @@ function error_message(status) {
     return errorMsg.toString();
 }
 
-function doRequest(callback, invoked, silent) {
+function doRequest(callback, invoked) {
 
     var url = 'https://' + settings.zendeskDomain + '.zendesk.com/api/v2/views/' + settings.viewID + '/tickets.json';
 
@@ -148,7 +148,7 @@ function doRequest(callback, invoked, silent) {
 
                     chrome_notify('No new cases!', null);
 
-                } else if (!silent) {
+                } else if (settings.showNotifications === true) {
 
                     notify_new_tickets();
                 }
