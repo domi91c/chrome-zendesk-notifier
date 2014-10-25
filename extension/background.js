@@ -340,11 +340,14 @@ function ticket_notif_click(notificationID) {
 function launch_zd_link(objectID, isView) {
 
     var property;
+    var typeUrl;
 
     if (isView) {
-        property = 'ticket.index';
+        property = 'show_filter';
+        typeUrl = 'filters/';
     } else {
-        property = 'show_filter'; 
+        property = 'ticket.index';
+        typeUrl = 'tickets/';
     }
 
     var tabQuery = {
@@ -358,9 +361,13 @@ function launch_zd_link(objectID, isView) {
 
         if (ZDtab) {
 
-            var js = 'window.Zendesk.router.transitionTo("' + property + '",' + objectID + ')';  // will not work due to context security policy :(
+            var actualCode = ['\'Zendesk.router.transitionTo("' + property + '",' + objectID + ');\''].join();
+            // console.log(actualCode); 
 
-            console.log(js);
+            var js = ['var script = document.createElement("script");',
+                      'script.textContent = ' + actualCode + ';',
+                      'console.log(script);',
+                      'document.head.appendChild(script);'].join('\n');
 
             chrome.tabs.executeScript(ZDtab.id, {
                 code: js
@@ -373,7 +380,7 @@ function launch_zd_link(objectID, isView) {
             });
         } else {
 
-            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/' + objectURL + objectID;
+            var newURL = 'https://' + settings.zendeskDomain + '.zendesk.com/agent/' + typeUrl + objectID;
             chrome.tabs.create({
                 url: newURL
             });
