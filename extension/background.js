@@ -467,26 +467,18 @@ function badge_icon(custom_string) {
 
 }
 
-function test_request() {
-
-    console.log('interval: ' + settings.interval);
-}
-
 function autoCheck() {
 
     // calls doRequest again if interval checking is enabled
     // clears timer before setting new one to ensure no duplicate timers
 
-    // console.log("autocheck invoked");
-
     clearTimeout(myTimer);
     
     if (settings.enabled === true) {
 
-        var interval = settings.getInterval() * 5000;
-
-        // console.log("set new timeout");
-        myTimer = setTimeout(doRequest, interval);
+        // var interval = settings.getInterval() * 60000;
+        
+        myTimer = setTimeout(doRequest, 5000);
 
     }
 }
