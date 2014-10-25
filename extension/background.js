@@ -148,7 +148,7 @@ function doRequest(callback, invoked) {
 
                     chrome_notify('No new cases!', null);
 
-                } else if (settings.showNotifications === true) {
+                } else if (settings.showNotifications === true || invoked === true) {
 
                     notify_new_tickets();
                 }
@@ -474,7 +474,7 @@ function autoCheck() {
 
         var interval = settings.getInterval() * 5000;
 
-        console.log("set new timeout");
+        // console.log("set new timeout");
         myTimer = setTimeout(doRequest, interval);
 
     }
