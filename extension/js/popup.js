@@ -7,10 +7,7 @@ window.onload = function() {
         var clickable = true;
 
         var list = $('.tickets');
-        var ticket = '<li id="' + id + '"' + 'class=tickets-li' + '>' + content + '</li>';
-        list.append(ticket);
-
-        var listItem = $('#' + id);
+        var ticket = $('<li id="' + id + '"' + 'class=tickets-li' + '>' + content + '</li>');
 
         if (subtext && !highlight) {
             ticket.prepend('<div class="info-created">' + subtext + '</div>');
@@ -23,6 +20,8 @@ window.onload = function() {
         if (clickable) {
             ticket[0].onclick = click_handler;
         };
+
+        list.append(ticket);
 
         ticket.fadeTo(200, 1);  // this has a bug!
     }
