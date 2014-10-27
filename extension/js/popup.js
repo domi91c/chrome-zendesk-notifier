@@ -13,18 +13,18 @@ window.onload = function() {
         var listItem = $('#' + id);
 
         if (subtext && !highlight) {
-            listItem.prepend('<div class="info-created">' + subtext + '</div>');
+            ticket.prepend('<div class="info-created">' + subtext + '</div>');
         } else if (subtext && highlight) {
-            listItem.prepend('<div class="info-created highlight">' + subtext + '</div>');
+            ticket.prepend('<div class="info-created highlight">' + subtext + '</div>');
         } else {
             clickable = false;
         };
 
         if (clickable) {
-            listItem[0].onclick = click_handler;
+            ticket[0].onclick = click_handler;
         };
 
-        listItem.fadeTo(200, 1);
+        ticket.fadeTo(200, 1);  // this has a bug!
     }
 
     function clear_loading() {
