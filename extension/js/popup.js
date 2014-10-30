@@ -1,6 +1,6 @@
 var bg = chrome.extension.getBackgroundPage();
 
-window.onload = function() {
+$(document).ready(function() {
 
     function create_list_item(id, content, subtext, highlight) {
 
@@ -115,4 +115,4 @@ window.onload = function() {
 
     bg.doRequest(show_tickets, null, true); // silent refresh when popup opens
 
-}
+});

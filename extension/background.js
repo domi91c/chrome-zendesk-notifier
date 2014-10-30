@@ -478,7 +478,7 @@ function autoCheck() {
 
         // var interval = settings.getInterval() * 60000;
 
-        myTimer = setTimeout(doRequest, 3000);
+        myTimer = setTimeout(doRequest, 6000);
 
     }
 }
