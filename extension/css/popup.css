@@ -25,7 +25,7 @@ li#loading {
     padding-left: 64px;
     border-bottom: solid 1px #eeeeee;
     position: relative;
-    opacity: 0;
+    opacity: 1;
     -webkit-transition: background-color .1s ease-out;
     -moz-transition: background-color .1s ease-out;
     -o-transition: background-color .1s ease-out;

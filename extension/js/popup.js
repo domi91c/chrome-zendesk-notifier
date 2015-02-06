@@ -23,16 +23,18 @@ $(document).ready(function() {
 
         list.append(ticket);
 
-        ticket.fadeTo(200, 1);  // this has a bug!
+        // ticket.fadeTo(200, 1);  // this has a bug!
     }
 
     function clear_loading() {
 
-        $('#loading').animate({
-            opacity: '0'
-        }, 250, function() {
-            $(this).remove();
-        });
+        // $('#loading').animate({
+        //     opacity: '0'
+        // }, 250, function() {
+        //     $(this).remove();
+        // });
+
+        $('#loading').css("opacity", 0);
     }
 
     function show_tickets(error) {
